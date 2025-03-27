@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Strategy Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+       /* --- Color Palette --- */
+        :root {
+            --primary-color: #2e8dcb;         /* #007bff;Primary blue */
+            --secondary-color: #2b6e9b;      /* #0056b3;Darker blue (hover) */
+            --accent-color: #e74c3c;         /* Accent blue */
+            --background-color: #f4f5f8;    /* Light gray background */
+            --white-color: #fff;            /* White */
+            --black-color: #000;
+            --container-background: #fff;
+            --form-background-color: #f4f5f8;
+            --text-color: #101112;          /* Dark gray text */
+            --lightest-gray-color: #e9ecef;    /* Light gray (table header) */
+            --light-gray-color: #ced4da;   /* Medium gray (form borders) */
+            --medium-gray-color: #6c757d;
+            --dark-gray-color: #343a40;     /* Dark gray text */
+
+            /* --- Layout & Spacing Variables --- */
+            --font-family-base: 'Roboto', sans-serif;
+            --font-size-base: 1em;
+            --font-size-h2: 1.5em;
+            --font-size-h3: 1.2em;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-bold: 700;
+            --line-height-base: 1.6;
+            --border-radius-base: 12px;
+            --border-radius-small: 4px;
+            --border-width-base: 1px;
+            --border-width-thick: 2px;
+            --container-width: 90%;
+            --padding-nano: 4px;
+            --padding-small: 6px;
+            --padding-base: 12px;
+            --padding-large: 20px;
+            --margin-small: 10px;
+            --margin-base: 15px;
+            --margin-medium: 20px;
+            --margin-large: 30px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            --box-shadow-intense: 0 4px 8px rgba(0, 0, 0, 0.25);
+            --transition-duration: 0.2s;
+            --transition-transform-duration: 0.1s;
+            --slider-height-width: 16px;
+            --scale-factor: 1.1;
+        }
+
+        [data-theme="dark"] {
+            --background-color: rgb(17,23,40); /* #181818 */;     /* Deep Gray */
+            --text-color: #e7edf5;           /* Soft White */
+            --container-background: rgb(30,40,56); /* #252525;*/ /* Slightly lighter than background */
+            --form-background-color: rgb(28, 31, 41);
+            --lightest-gray-color: rgb(28,31,41); /*#333*/;    /* Darker for table headers */
+            --light-gray-color: #444;       /* Darker for borders */
+            --medium-gray-color: #999;      /* Lighter for less important text */
+            --black-color: #fff; /* White for contrast */
+            --primary-color: #64b5f6; /* Lighter blue */
+            --secondary-color: #4288c1; /* Slightly darker blue */
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: var(--font-family-base);
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: var(--line-height-base);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: var(--font-size-base);
+        }
+
+        .content-container {
+            width: var(--container-width);
+            max-width: 1400px;
+            margin: 0 auto var(--margin-medium);
+        }
+
+        /* --- Intro Container --- */
+        .intro-container {
+            background-color: var(--container-background);
+            border-bottom-left-radius: var(--border-radius-base);
+            border-bottom-right-radius: var(--border-radius-base);
+            margin-bottom: var(--margin-large);
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .intro-text {
+            padding: var(--margin-small) var(--margin-large);
+        }
+
+        .intro-text h2 {
+            margin-bottom: var(--margin-base);
+            font-size: var(--font-size-h2);
+        }
+
+        .intro-text p {
+            margin-bottom: var(--margin-small);
+        }
+
+        .intro-text ol {
+            margin-left: var(--margin-medium);
+            margin-bottom: var(--margin-small);
+        }
+
+        /* --- Theme Toggle --- */
+        #dark-mode-toggle {
+            display: block;
+            position: absolute;
+            top: var(--margin-small);
+            right: var(--margin-small);
+            width: 3rem;
+            height: 3rem;
+            background: transparent;
+            border: none;
+            overflow: hidden;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        #dark-mode-toggle svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1.5625rem;
+            height: 1.5625rem;
+            pointer-events: none;
+        }
+
+        #dark-mode-toggle .cs-moon {
+            z-index: 2;
+            transition: transform 0.3s, opacity 0.3s, fill 0.3s;
+        }
+
+        #dark-mode-toggle .cs-sun {
+            z-index: 1;
+            transform: translate(-50%, 100%);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        body[data-theme="dark"] #dark-mode-toggle .cs-sun {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+
+        body[data-theme="dark"] #dark-mode-toggle .cs-moon {
+            transform: translate(-50%, -150%);
+            opacity: 0;
+        }
+
+        /* --- Main Layout --- */
+        .main-container {
+            display: flex;
+            gap: var(--margin-medium);
+        }
+
+        .left-panel,
+        .right-panel {
+            padding: var(--padding-large);
+            box-sizing: border-box;
+            background-color: var(--container-background);
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--box-shadow);
+            width: 50%
+        }
+
+        /* --- Headings --- */
+        h2,
+        h3 {
+            color: var(--text-color);
+            margin-bottom: var(--margin-base);
+            margin-top: 0;
+            font-weight: var(--font-weight-bold); 
+            font-size: var(--font-size-h3); 
+        }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--margin-medium);
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: var(--border-width-base) solid var(--light-gray-color);
+            padding: var(--padding-nano) var(--padding-small);
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--lightest-gray-color);
+            font-weight: var(--font-weight-medium);
+            color: var(--black-color);
+        }
+
+        th:first-child,
+        td:first-child {
+            width: 80px;
+        }
+
+        /* --- Lab Options Table --- */
+        .lab-options-table {
+            border-collapse: collapse;
+            margin-top: var(--margin-small);
+            table-layout: auto;
+        }
+
+        .lab-options-table th,
+        .lab-options-table td {
+            border: var(--border-width-base) solid var(--light-gray-color);
+            padding: var(--padding-base);
+            text-align: center;
+        }
+
+        .lab-options-table th {
+            background-color: var(--lightest-gray-color);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .lab-options-table td:nth-child(4) {
+            font-weight: var(--font-weight-bold);
+        }
+
+        .lab-options-table td:last-child {
+            border-left: var(--border-width-thick) solid var(--light-gray-color);
+        }
+
+        .lab-options-table th:last-child {
+            border-left: var(--border-width-thick) solid var(--light-gray-color);
+        }
+
+        /* --- Form Elements --- */
+        input[type="float"],
+        select {
+            padding: var(--padding-base);
+            margin: var(--padding-small) 0;
+            border: var(--border-width-base) solid var(--light-gray-color);
+            border-radius: var(--border-radius-small);
+            box-sizing: border-box;
+            width: calc(100% - calc(var(--padding-base) * 2));
+            font-size: 0.8em;
+            transition: border-color var(--transition-duration) ease-in-out;
+            display: block;
+            background-color: var(--form-background-color);
+            color: var(--text-color);
+        }
+
+        input[type="float"]:focus,
+        input[type="float"]:hover,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* --- Button --- */
+        .button-container {
+            text-align: center;
+            margin-top: var(--margin-large);
+            margin-bottom: var(--margin-medium);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            cursor: pointer;
+            border: none;
+            transition: background-color var(--transition-duration) ease-in-out, transform var(--transition-transform-duration) ease-in-out;
+            font-weight: var(--font-weight-bold);
+            padding: var(--padding-base) var(--padding-large); 
+            font-size: 1.1em; 
+            border-radius: var(--border-radius-small); 
+            display: inline-block;
+      }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1.2px); 
+            box-shadow: var(--box-shadow-intense);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        /* --- Slider --- */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: var(--margin-small);
+            margin-bottom: var(--margin-small);
+            position: relative;
+            height: 20px;
+        }
+
+        .slider {
+            width: calc(100% - 100px);
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px; 
+            background: var(--light-gray-color); 
+            outline: none;
+            border-radius: var(--border-radius-small); 
+            z-index: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: var(--slider-height-width); 
+            height: var(--slider-height-width);
+            background: var(--primary-color);
+            border: var(--border-width-thick) solid var(--accent-primary); 
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: transform var(--transition-transform-duration) ease-in-out, box-shadow var(--transition-transform-duration) ease-in-out;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(var(--scale-factor)); 
+            background: var(--secondary-color);
+        }
+
+        .slider::-moz-range-thumb {
+            width: var(--slider-height-width); 
+            height: var(--slider-height-width); 
+            background: var(--primary-color);
+            border: var(--border-width-thick) solid var(--accent-primary); 
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: transform var(--transition-transform-duration) ease-in-out, box-shadow var(--transition-transform-duration) ease-in-out;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(var(--scale-factor));
+            background: var(--secondary-color);
+            box-shadow: var(--box-shadow-intense);
+        }
+
+        .ticks {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            width: calc(100% - 100px - var(--slider-height-width));
+            left: calc(var(--slider-height-width)/2);
+            z-index: 0;
+        }
+
+        .tick {
+            width: 4px; 
+            height: 12px;
+            background-color: var(--light-gray-color);
+            /*background: var(--medium-gray-color);*/
+        }
+
+        .slider-output {
+            margin-left: var(--margin-small);
+            font-weight: var(--font-weight-bold);
+            display: inline-block;
+            vertical-align: middle;
+            width: 80px;
+            text-align: right;
+            box-sizing: border-box;
+            padding-right: var(--padding-small);
+            color: var(--primary-color); 
+        }
+
+        /* --- Strategy Selector --- */
+        .selector {
+            margin-bottom: var(--margin-small);
+        }
+
+        .selector label {
+            display: block;
+            margin-bottom: var(--margin-base); 
+            font-weight: var(--font-weight-medium);
+        }
+
+        .selector select {
+            width: 100%;
+            padding: var(--padding-base);
+            border: var(--border-width-base) solid var(--light-gray-color);
+            border-radius: var(--border-radius-small);
+            box-sizing: border-box;
+            font-size: var(--font-size-base);
+            transition: border-color var(--transition-duration) ease-in-out;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* URL: https://codepen.io/herrfischer/pen/aNpWwy */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 10px;
+            cursor: pointer;
+        }
+
+        .selector select:focus,
+        .selector select:hover {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* --- Performance Items --- */
+        .performance-item {
+            margin-bottom: var(--margin-small);
+            font-size: 1.1em; 
+        }
+
+
+        /* --- Recommendation Reasoning --- */
+        .recommendation-reasoning {
+            font-style: italic;
+            color: var(--medium-gray-color);
+            margin-top: var(--margin-small);
+        }
+
+        /* --- Media Queries for Responsiveness --- */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column; /* Stack panels vertically on small screens */
+            }
+
+            .left-panel,
+            .right-panel {
+                margin-left: 0;
+                width: 100%;
+                margin-bottom: var(--margin-medium); 
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <div class="content-container">
+        <div class="intro-container">
+            <div id="dark-mode-toggle" class="theme-toggle" onclick="toggleTheme()">
+                <svg id="themeIconSun" class="cs-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" /><path d="M6.343 17.657l-1.414 1.414" /><path d="M6.343 6.343l-1.414 -1.414" /><path d="M17.657 6.343l1.414 -1.414" /><path d="M17.657 17.657l1.414 1.414" /><path d="M4 12h-2" /><path d="M12 4v-2" /><path d="M20 12h2" /><path d="M12 20v2" /></svg>
+                <svg id="themeIconMoon" class="cs-moon" xmlns="http://www.w3.org/2000/svg"width="24"height="24"viewBox="0 0 24 24"fill="none"stroke="currentColor"stroke-width="2"stroke-linecap="round"stroke-linejoin="round"> <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+              </svg>
+            </div>                
+            <div class="intro-text">
+                <h2>Mathematics for AI 2 @ JKU - Strategy Tool</h2>
+                <p>
+                    The tool suggests the best lab exercise option (Lecture-lab, Exercise-lab, Combined-lab or No Lab) based on your chosen strategy.
+                </p>
+                <ol>
+                    <li><strong>Select your strategy:</strong> Choose between "Pass Course" (safe bet), "Best GPA" (to impress) or "Max Points" (recommended).</li>
+                    <li><strong>Enter previous topics points:</strong>  Provide achieved Exercise and Lecture points for each <b>completed</b> topic. Leave topics blank or type 0 if not yet completed.</li>
+                    <li><strong>Enter current topic module points:</strong> Input your Quiz and Bonus points for each module of the <b>current</b> topic for the lab exercise.</li>
+                    <li><strong>Adjust lab points slider:</strong> Set your expected points for the lab exercise using the slider.</li>
+                    <li><strong>Calculate Strategy:</strong> Click the "Calculate Strategy" button to get your optimal strategy recommendation. Press this button after any changes.</li>
+                </ol>
+   
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="left-panel">
+                <h2>Course Strategy Selector</h2>
+
+                <div class="selector">
+                    <label for="strategy">Select Strategy:</label>
+                    <select id="strategy">
+                        <option value="max_points">Max Points</option>
+                        <option value="best_grade">Best GPA</option>
+                        <option value="pass">Pass Course</option>
+                    </select>
+                </div>
+
+                <h3>Previous Topics Points</h3>
+                <p>Please provide the points for the <b>successfully completed</b> topics (not the current one)!</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Exercise Points</th>
+                            <th>Lecture Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1: CF</td><td><input type="float" id="exercise_topic1" value="0" min="0" max="10"></td><td><input type="float" id="lecture_topic1" value="0" min="0" max="10"></td></tr>
+                        <tr><td>2: DC</td><td><input type="float" id="exercise_topic2" value="0" min="0" max="10"></td><td><input type="float" id="lecture_topic2" value="0" min="0" max="10"></td></tr>
+                        <tr><td>3: BIT</td><td><input type="float" id="exercise_topic3" value="0" min="0" max="10"></td><td><input type="float" id="lecture_topic3" value="0" min="0" max="10"></td></tr>
+                        <tr><td>4: MC</td><td colspan="2"><i>Calculation in <b>Current Topic Module Points</b> below if topic 3 is completed</i></td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Current Topic Module Points</h3>
+                <p>Please provide the points for the <b>current</b> topic for which the lab exercise is accounted for.<br>Tip: When playing around with different values for the second lecture quiz, you can calculate whether it's necessary to take it considering the lab exercise.</p>
+                <p>Notation as integer or floats (use '.' as decimal, e. g. 6.67)</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Quiz Points</th>
+                            <th>Bonus Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Lecture Module 1</td><td><input type="float" id="quiz_L1" value="0" min="0" max="10"></td><td><input type="float" id="bonus_L1" value="0" min="0" max="2"></td></tr>
+                        <tr><td>Lecture Module 2</td><td><input type="float" id="quiz_L2" value="0" min="0" max="10"></td><td><input type="float" id="bonus_L2" value="0" min="0" max="2"></td></tr>
+                        <tr><td>Exercise Module</td><td><input type="float" id="quiz_E" value="0" min="0" max="10"></td><td><input type="float" id="bonus_E" value="0" min="0" max="2"></td></tr>
+                    </tbody>
+                </table>
+
+
+                <div>
+                    <h3>Expected Lab Exercise Points</h3>
+                    <label for="lab_points_slider">Provide your estimate (0-10 points)</label>
+                    <div class="slider-container">
+                    <input type="range" id="lab_points_slider" min="0" max="10" value="10" class="slider" step="1">
+                    <span id="slider_value" class="slider-output">10</span>
+                    <div class="ticks">
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+
+                <h2>Course Performance</h2>
+                <div id="course_performance">
+                    <!-- Total points and percentage will be displayed here -->
+                </div>
+                <h2></h2>
+                <h2>Optimal Strategy Recommendation</h2>
+                <div id="strategy_recommendation">
+                    <p>Please insert values first and click "Calculate Strategy".</p>
+                    <!-- Strategy recommendation will be displayed here -->
+                </div>
+
+                <div id="recommendation_reasoning" class="recommendation-reasoning">
+                    <!-- Reasoning for recommendation will be displayed here -->
+                </div>
+
+
+                <h2></h2>
+
+                <h3>Lab Exercise Options</h3>
+                <div id="lab_options">
+                    <!-- Expected points for each lab option will be displayed here -->
+                </div>
+                <div id="performance_chart">
+                    <!-- Performance chart will be displayed here -->
+                </div>
+
+                <div class="content-container">
+                    <div class="button-container">
+                        <button onclick="calculateStrategy()">Calculate Strategy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script>
+    // Global variables to store max possible points, calculated in recalculateMaxPoints()
+    let maxLecturePointsPossible = 0;
+    let maxExercisePointsPossible = 0;
+
+    // --- Theme Toggling ---
+    function toggleTheme() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const moonIcon = document.querySelector('#dark-mode-toggle .cs-moon');
+        const sunIcon = document.querySelector('#dark-mode-toggle .cs-sun');
+
+        if (theme === 'dark') {
+            moonIcon.style.transform = 'translate(-50%, -150%)';
+            moonIcon.style.opacity = '0';
+            sunIcon.style.transform = 'translate(-50%, -50%)';
+            sunIcon.style.opacity = '1';
+        } else {
+            moonIcon.style.transform = 'translate(-50%, -50%)';
+            moonIcon.style.opacity = '1';
+            sunIcon.style.transform = 'translate(-50%, 100%)';
+            sunIcon.style.opacity = '0';
+        }
+    }
+
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
+
+    // Load the theme on initial load
+    loadTheme();
+
+    function updateThemeIcon() {
+        // const themeIcon = document.getElementById('themeIcon');
+        // const currentTheme = document.documentElement.getAttribute('data-theme');
+        // themeIcon.src = currentTheme === 'light' ? "/static/icons/moon.svg" : "/static/icons/sun-white.svg";
+        const moonIcon = document.querySelector('#dark-mode-toggle .cs-moon');
+        const sunIcon = document.querySelector('#dark-mode-toggle .cs-sun');
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+
+        if (currentTheme === 'dark') {
+            moonIcon.style.transform = 'translate(-50%, -50%)';
+            sunIcon.style.transform = 'translate(-50%, 100%)';
+        }
+
+        if (currentTheme === 'light') {
+             moonIcon.style.transform = 'translate(-50%, -50%)';
+             sunIcon.style.transform = 'translate(-50%, 100%)';
+    
+    }
+
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon();
+    }
+}
+
+    function calculateStrategy() {
+        // 1. Get User Inputs from the form
+        const strategy = document.getElementById("strategy").value;
+        const labPointsExpected = parseInt(document.getElementById("lab_points_slider").value);
+
+        // Points from previous topics (completed before the current one)
+        const prevExercisePoints = {
+            topic1: parseFloat(document.getElementById("exercise_topic1").value) || 0,
+            topic2: parseFloat(document.getElementById("exercise_topic2").value) || 0,
+            topic3: parseFloat(document.getElementById("exercise_topic3").value) || 0,
+        };
+        const prevLecturePoints = {
+            topic1: parseFloat(document.getElementById("lecture_topic1").value) || 0,
+            topic2: parseFloat(document.getElementById("lecture_topic2").value) || 0,
+            topic3: parseFloat(document.getElementById("lecture_topic3").value) || 0,
+        };
+
+        // Quiz and Bonus points for the current topic's modules
+        const quizPoints = {
+            L1: parseFloat(document.getElementById("quiz_L1").value) || 0,
+            L2: parseFloat(document.getElementById("quiz_L2").value) || 0,
+            E: parseFloat(document.getElementById("quiz_E").value) || 0,
+        };
+        const bonusPoints = {
+            L1: parseFloat(document.getElementById("bonus_L1").value) || 0,
+            L2: parseFloat(document.getElementById("bonus_L2").value) || 0,
+            E: parseFloat(document.getElementById("bonus_E").value) || 0,
+        };
+
+        // Recalculate max possible points based on completed and current topics
+        recalculateMaxPoints(prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
+
+        // Calculate results for each lab option (No Lab, Lecture-lab, Exercise-lab, Combined-lab)
+        const labOptionsResults = calculateLabOptions(labPointsExpected, quizPoints, bonusPoints, prevExercisePoints, prevLecturePoints);
+        displayLabOptions(labOptionsResults); // Display lab options in a table
+
+        // Determine the best strategy based on user selection and lab option results
+        const bestStrategyResult = getBestStrategy(strategy, labOptionsResults, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
+        const strategyRecommendationText = formatStrategyRecommendation(bestStrategyResult.strategy, bestStrategyResult.labType);
+        document.getElementById("strategy_recommendation").innerHTML = strategyRecommendationText; // Display strategy recommendation
+        document.getElementById("recommendation_reasoning").textContent = bestStrategyResult.reasoning; // Display reasoning for the recommendation
+
+        // Display overall course performance (points and percentages)
+        const coursePerformanceText = formatCoursePerformance(labOptionsResults.noLab, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
+        document.getElementById("course_performance").innerHTML = coursePerformanceText; // Display course performance
+    }
+
+    /**
+     * Recalculates the maximum possible lecture and exercise points based on completed and current topics.
+     * Updates the global variables `maxLecturePointsPossible` and `maxExercisePointsPossible`.
+     * @param {object} prevExercisePoints Points from previous exercise topics.
+     * @param {object} prevLecturePoints Points from previous lecture topics.
+     * @param {object} quizPoints Quiz points for the current topic modules.
+     * @param {object} bonusPoints Bonus points for the current topic modules.
+     */
+     function recalculateMaxPoints(prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
+        maxLecturePointsPossible = 0;
+        maxExercisePointsPossible = 0;
+
+        // Determine the index of the last topic with entered points in previous topics
+        let lastTopicIndex = getLastTopicWithValues(prevExercisePoints, prevLecturePoints);
+
+        // Check if there are any points entered for the current topic
+        let currentTopicPointsExist = false;
+        if (quizPoints.L1 > 0 || quizPoints.L2 > 0 || quizPoints.E > 0 ||
+            bonusPoints.L1 > 0 || bonusPoints.L2 > 0 || bonusPoints.E > 0) {
+            currentTopicPointsExist = true;
+        }
+
+        // If current topic points exist, increment lastTopicIndex to include the current topic in max points calculation
+        if (currentTopicPointsExist) {
+            lastTopicIndex += 1;
+        }
+
+        // Calculate max points based on the number of topics considered (previous and current if applicable)
+        for (let i = 1; i <= lastTopicIndex; i++) {
+            maxLecturePointsPossible += 20; // Each topic has a max of 20 lecture points
+            maxExercisePointsPossible += 10; // Each topic has a max of 10 exercise points
+        }
+    }
+
+    /**
+     * Calculates module points based on quiz and bonus points, with a maximum of 10 points per module.
+     * Formula: 𝑚𝑖=min(𝑞𝑖+𝑏𝑖,10)
+     * @param {number} quiz Quiz points for the module.
+     * @param {number} bonus Bonus points for the module.
+     * @returns {number} Module points (maximum 10).
+     */
+    function calculateModulePoints(quiz, bonus) {
+        return Math.min(quiz + bonus, 10); // Formula 𝑚𝑖=min(𝑞𝑖+𝑏𝑖,10)
+    }
+
+    /**
+     * Calculates topic points (lecture and exercise) based on the chosen lab type, lab points, and module points.
+     * Formulas:
+     * Lecture points: 𝑙𝑗=min(𝐿𝑗+23𝐶𝑗+∑𝑖≠𝑥𝑗𝑚𝑖,20)  (simplified in this context as lab is for current topic only)
+     * Exercise points: 𝑒𝑗=min(𝐸𝑗+13𝐶𝑗+𝑚𝑥𝑗,10)  (simplified in this context as lab is for current topic only)
+     * Where Lj and Ej are lab points allocated to Lecture and Exercise respectively, Cj is total lab points.
+     * @param {string} labType Type of lab exercise ("noLab", "lecture", "exercise", "combined").
+     * @param {number} labPoints Expected lab points (0-10).
+     * @param {object} quizPoints Quiz points for current topic modules (L1, L2, E).
+     * @param {object} bonusPoints Bonus points for current topic modules (L1, L2, E).
+     * @returns {object} Object containing lecturePoints and exercisePoints for the topic.
+     */
+     function calculateTopicPoints(labType, labPoints, quizPoints, bonusPoints) {
+        // Calculate module points for each module
+        const mL1 = calculateModulePoints(quizPoints.L1, bonusPoints.L1);
+        const mL2 = calculateModulePoints(quizPoints.L2, bonusPoints.L2);
+        const mE = calculateModulePoints(quizPoints.E, bonusPoints.E);
+
+        let lectureLabPoints = 0;
+        let exerciseLabPoints = 0;
+
+        // Allocate lab points based on lab type
+        if (labType === "lecture") {
+            lectureLabPoints = labPoints; // All lab points to lecture
+        } else if (labType === "exercise") {
+            exerciseLabPoints = labPoints; // All lab points to exercise
+        } else if (labType === "combined") {
+            lectureLabPoints = (2/3) * labPoints; // 2/3 of lab points to lecture
+            exerciseLabPoints = (1/3) * labPoints; // 1/3 of lab points to exercise
+        } // "noLab" has labPoints = 0, so no allocation needed
+
+        // Calculate total lecture and exercise points, capped at max per topic
+        const lecturePoints = Math.min(lectureLabPoints + mL1 + mL2, 20); // Max 20 lecture points per topic
+        const exercisePoints = Math.min(exerciseLabPoints + mE, 10);   // Max 10 exercise points per topic
+        return { lecturePoints: lecturePoints, exercisePoints: exercisePoints };
+    }
+
+
+    /**
+     * Calculates topic points for the "no lab" option, which is a specific case of calculateTopicPoints with labPoints = 0.
+     * @param {object} quizPoints Quiz points for current topic modules.
+     * @param {object} bonusPoints Bonus points for current topic modules.
+     * @returns {object} Object containing lecturePoints and exercisePoints for the topic with no lab.
+     */
+    function calculateCurrentTopicPointsNoLab(quizPoints, bonusPoints) {
+        return calculateTopicPoints("noLab", 0, quizPoints, bonusPoints);
+    }
+
+
+    /**
+     * Calculates lab options results for all lab types (noLab, lecture, exercise, combined).
+     * For each lab type, calculates total lecture and exercise points, GPA, and total points.
+     * @param {number} labPointsExpected Expected lab points from slider.
+     * @param {object} quizPoints Quiz points for current topic modules.
+     * @param {object} bonusPoints Bonus points for current topic modules.
+     * @param {object} prevExercisePoints Points from previous exercise topics.
+     * @param {object} prevLecturePoints Points from previous lecture topics.
+     * @returns {object} Object containing results for each lab type, keyed by lab type name.
+     */
+    function calculateLabOptions(labPointsExpected, quizPoints, bonusPoints, prevExercisePoints, prevLecturePoints) {
+        const labTypes = ["noLab", "lecture", "exercise", "combined"];
+        const labOptionsResults = {};
+
+        labTypes.forEach(labType => {
+            let currentTopicPoints = {lecturePoints: 0, exercisePoints: 0};
+
+            // Calculate current topic points based on lab type
+            if (labType === "noLab") {
+                currentTopicPoints = calculateTopicPoints("noLab", 0, quizPoints, bonusPoints);
+            } else if (labType === "lecture") {
+                currentTopicPoints = calculateTopicPoints("lecture", labPointsExpected, quizPoints, bonusPoints);
+            } else if (labType === "exercise") {
+                currentTopicPoints = calculateTopicPoints("exercise", labPointsExpected, quizPoints, bonusPoints);
+            } else if (labType === "combined") {
+                currentTopicPoints = calculateTopicPoints("combined", labPointsExpected, quizPoints, bonusPoints);
+            }
+
+            // Calculate total points by summing previous topic points and current topic points
+            let totalLecturePoints = Object.values(prevLecturePoints).reduce((a, b) => a + b, 0) + currentTopicPoints.lecturePoints;
+            let totalExercisePoints = Object.values(prevExercisePoints).reduce((a, b) => a + b, 0) + currentTopicPoints.exercisePoints;
+
+            // Store results for each lab type
+            labOptionsResults[labType] = {
+                totalLecturePoints: totalLecturePoints,
+                totalExercisePoints: totalExercisePoints,
+                currentLecturePoints: currentTopicPoints.lecturePoints, // Store current topic points for passing condition check
+                currentExercisePoints: currentTopicPoints.exercisePoints, // Store current topic points for passing condition check
+                labType: labType,
+                gpa: calculateGPA(totalLecturePoints, totalExercisePoints), // Calculate GPA for each lab option
+                totalPoints: totalLecturePoints + totalExercisePoints // Calculate total points for each lab option
+            };
+        });
+        return labOptionsResults;
+    }
+
+    /**
+     * Displays the lab options results in a table in the "Lab Exercise Options" section of the HTML.
+     * @param {object} labOptionsResults Results calculated by calculateLabOptions function.
+     */
+    function displayLabOptions(labOptionsResults) {
+        let optionsTableHTML = `<table class="lab-options-table">
+            <thead>
+                <tr>
+                    <th>Lab Option</th>
+                    <th>Expected Lecture Points</th>
+                    <th>Expected Exercise Points</th>
+                    <th>Total</th>
+                    <th>Weighted GPA</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        // Iterate through each lab type result and create a table row
+        for (const labType in labOptionsResults) {
+            const result = labOptionsResults[labType];
+            let labName = "";
+            if (labType === "noLab") labName = "No Lab";
+            else if (labType === "lecture") labName = "Lecture-lab";
+            else if (labType === "exercise") labName = "Exercise-lab";
+            else if (labType === "combined") labName = "Combined-lab";
+
+            optionsTableHTML += `
+                <tr>
+                    <td>${labName}</td>
+                    <td>${result.totalLecturePoints.toFixed(2)}</td>
+                    <td>${result.totalExercisePoints.toFixed(2)}</td>
+                    <td>${(result.totalLecturePoints + result.totalExercisePoints).toFixed(2)}</td>
+                    <td>${result.gpa.toFixed(2)}</td>
+                </tr>`;
+        }
+        optionsTableHTML += `</tbody></table>`;
+        document.getElementById("lab_options").innerHTML = optionsTableHTML; // Set the table HTML to the lab_options div
+    }
+
+
+    /**
+     * Determines the best lab exercise strategy based on the selected strategy (pass, best_grade, max_points)
+     * and the calculated lab options results.
+     * @param {string} strategy User-selected strategy ("pass", "best_grade", "max_points").
+     * @param {object} labOptionsResults Results from calculateLabOptions function.
+     * @param {object} prevExercisePoints Points from previous exercise topics.
+     * @param {object} prevLecturePoints Points from previous lecture topics.
+     * @param {object} quizPoints Quiz points for current topic modules.
+     * @param {object} bonusPoints Bonus points for current topic modules.
+     * @returns {object} Object containing the best lab type, the selected strategy, the result object, and the reasoning for the recommendation.
+     */
+    function getBestStrategy(strategy, labOptionsResults, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
+        let bestLabType = "noLab"; // Default best lab type
+        let bestResult = labOptionsResults["noLab"]; // Default best result is "noLab"
+        let reasoning = ""; // Initialize reasoning for recommendation
+
+        // Calculate points for current topic if "no lab" is chosen (to check passing status)
+        const currentTopicNoLabPoints = calculateCurrentTopicPointsNoLab(quizPoints, bonusPoints);
+        const currentTopicExercisePointsNoLab = currentTopicNoLabPoints.exercisePoints;
+        const currentTopicLecturePointsNoLab = currentTopicNoLabPoints.lecturePoints;
+
+        // Check if current topic modules are passing (>= 50% of max points for each module type)
+        const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= 5; // Exercise max is 10, 50% is 5
+        const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= 10; // Lecture max is 20, 50% is 10
+
+
+        if (strategy === "pass") { // "Pass Course" strategy
+            let passingStrategies = []; // Array to hold lab options that result in passing the course
+            let nonPassingStrategies = []; // Array to hold lab options that do not result in passing
+
+            // Separate lab options into passing and non-passing strategies
+            for (const labType in labOptionsResults) {
+                const result = labOptionsResults[labType];
+                if (isPassing(result.totalLecturePoints, result.totalExercisePoints, result.currentLecturePoints)) {
+                    passingStrategies.push(result); // Add to passing strategies if it leads to passing
+                } else {
+                    nonPassingStrategies.push(result); // Add to non-passing strategies otherwise
+                }
+            }
+
+            // Prioritize passing the current topic if current topic modules are not passing yet
+            if (!isCurrentTopicExercisePassing || !isCurrentTopicLecturePassing) {
+
+                reasoning = "Reasoning: Prioritizing passing current topic because ";
+                if (!isCurrentTopicExercisePassing && !isCurrentTopicLecturePassing) {
+                    reasoning += "both lecture and exercise modules are below the 50% threshold in the current topic (in case lab exercise points are lower than expected).";
+                    bestLabType = "combined"; // Combined lab is a good default to boost both lecture and exercise points
+                    bestResult = labOptionsResults["combined"];
+                } else if (!isCurrentTopicLecturePassing) {
+                    reasoning += "lecture module is below the 50% threshold in the current topic (in case lab exercise points are lower than expected).";
+                    bestLabType = "lecture"; // Lecture-lab prioritizes lecture points
+                    bestResult = labOptionsResults["lecture"];
+                } else if (!isCurrentTopicExercisePassing) {
+                    reasoning += "exercise module is below the 50% threshold in the current topic (in case lab exercise points are lower than expected).";
+                    bestLabType = "exercise"; // Exercise-lab prioritizes exercise points
+                    bestResult = labOptionsResults["exercise"];
+                }
+
+            } else { // If current topic is already passing, focus on overall course pass/maximize points while passing
+                if (!isPassing(bestResult.totalLecturePoints, bestResult.totalExercisePoints, bestResult.currentLecturePoints)) { // if overall not passing with "noLab"
+                    if (passingStrategies.length > 0) {
+                        reasoning = "Current topic modules are ok, but prioritizing overall course pass. Maximizing total points while ensuring passing status.";
+                        passingStrategies.sort((a, b) => (b.totalLecturePoints + b.totalExercisePoints) - (a.totalLecturePoints + a.totalExercisePoints)); // Sort passing strategies by total points (descending)
+                        bestResult = passingStrategies[0]; // Select the passing strategy with max total points
+                        bestLabType = bestResult.labType;
+
+
+                    } else { // If overall not passing and no passing strategy available
+                        reasoning = "Current topic modules are ok, but no strategy guarantees overall passing, recommending combined lab to maximize points.";
+                        bestLabType = "combined"; // Combined lab is a reasonable default to maximize points even if not passing
+                        bestResult = labOptionsResults["combined"];
+                    }
+
+
+                }
+                else { // if overall passing with "noLab"
+                    if (passingStrategies.length > 0) {
+                        reasoning = "Current topic modules and overall course are ok. Maximizing total points while maintaining passing status.";
+                        passingStrategies.sort((a, b) => (b.totalLecturePoints + b.totalExercisePoints) - (a.totalLecturePoints + a.totalExercisePoints)); // Sort passing strategies by total points (descending)
+                        bestResult = passingStrategies[0]; // Select the passing strategy with max total points
+                        bestLabType = bestResult.labType;
+                    } else { // If already passing and no better passing strategy, maximize points
+                        reasoning = "Current topic modules and overall course are ok, recommending combined lab to maximize points.";
+                        bestLabType = "combined"; // Combined lab to maximize points
+                        bestResult = labOptionsResults["combined"];
+                    }
+                }
+            }
+
+
+        } else if (strategy === "best_grade") { // "Best GPA" strategy
+            reasoning = "Reasoning: Prioritizing minimizing Weighted GPA.";
+            let minGPA = 5; // Initialize with maximum possible GPA (worst grade)
+            let bestLabTypes = []; // Array to store multiple best lab types in case of a tie in GPA
+
+            // Find lab option(s) with the minimum GPA
+            for (const labType in labOptionsResults) {
+                const result = labOptionsResults[labType];
+                const gpa = calculateGPA(result.totalLecturePoints, result.totalExercisePoints);
+
+                if (gpa < minGPA) { // If current GPA is better (lower) than current minimum
+                    minGPA = gpa; // Update minimum GPA
+                    bestLabTypes = [labType]; // Reset best lab types array with current lab type
+                    bestResult = result;
+                } else if (gpa == minGPA) { // If current GPA is equal to current minimum (tie)
+                    minGPA = gpa;
+                    bestLabTypes.push(labType); // Add current lab type to the array of best lab types
+                    bestResult = result; // (Result is the same GPA, can be updated or not)
+                }
+            }
+            bestLabType = bestLabTypes.join(" or "); // If multiple best lab types, join them with " or "
+        } else if (strategy === "max_points") { // "Max Points" strategy
+            reasoning = "Reasoning: Prioritizing maximizing total points.";
+            let maxTotalPoints = -1; // Initialize with -1 to ensure the first option is always better
+            let bestLabTypes = []; // Array to store multiple best lab types in case of a tie in total points
+
+            // Find lab option(s) with the maximum total points
+            for (const labType in labOptionsResults) {
+                const result = labOptionsResults[labType];
+                if (result.totalPoints > maxTotalPoints) { // If current total points are greater than current max
+                    maxTotalPoints = result.totalPoints; // Update maximum total points
+                    bestLabTypes = [labType]; // Reset best lab types array with current lab type
+                    bestResult = result;
+                } else if (result.totalPoints === maxTotalPoints) { // If current total points are equal to current max (tie)
+                    bestLabTypes.push(labType); // Add current lab type to the array of best lab types
+                }
+            }
+            bestLabType = bestLabTypes.join(" or "); // If multiple best lab types, join them with " or "
+        }
+
+        return {
+            labType: bestLabType,
+            strategy: strategy,
+            result: bestResult,
+            reasoning: reasoning
+        };
+    }
+
+
+    /**
+     * Formats the strategy recommendation text for display in the HTML.
+     * @param {string} strategy Selected strategy ("pass", "best_grade", "max_points").
+     * @param {string} labType Best lab type or types (e.g., "lecture", "exercise or combined").
+     * @returns {string} Formatted HTML string for strategy recommendation.
+     */
+    function formatStrategyRecommendation(strategy, labType) {
+        let text = "Recommended Lab Exercise: <b style='color: var(--accent-color);'>"; // Apply accent color
+            let labDisplayName = "";
+
+        // Convert labType value to display-friendly lab name
+        if (labType === "noLab") {
+            labDisplayName = "No Lab Exercise";
+        } else if (labType === "lecture") {
+            labDisplayName = "Lecture-lab";
+        } else if (labType === "exercise") {
+            labDisplayName = "Exercise-lab";
+        } else if (labType === "combined") {
+            labDisplayName = "Combined-lab";
+        } else if (labType.includes("or")) { // Handle cases where multiple lab types are recommended (joined by " or ")
+            labDisplayName = labType.split(" or ").map(type => {
+                if (type === "noLab") return "No Lab Exercise";
+                if (type === "lecture") return "Lecture-lab";
+                if (type === "exercise") return "Exercise-lab";
+                if (type === "combined") return "Combined-lab";
+                return ""; // Handle unknown types (should not happen)
+            }).join(" or ");
+        } else {
+            labDisplayName = "****"; // Handle unknown types (should not happen)
+        }
+
+        text += `${labDisplayName}</b>.`; // Add lab display name to the recommendation text
+
+        // Add strategy-specific explanation to the recommendation text
+        if (strategy === "pass") {
+            text += "<br>This option has the highest probability to pass the course.";
+        } else if (strategy === "best_grade") {
+            if (labType.includes("or")) {
+                text += "<br>These options are estimated to minimize your GPA.";
+            } else {
+                text += "<br>This option is estimated to minimize your GPA.";
+            }
+        } else if (strategy === "max_points") {
+            if (labType.includes("or")) {
+                text += "<br>These options are estimated to maximize your total points.";
+            } else {
+                text += "<br>This option is estimated to maximize your total points.";
+            }
+        }
+        return text; // Return the formatted recommendation text
+    }
+
+    /**
+     * Formats the course performance text for display in the HTML.
+     * Displays lecture and exercise points and percentages without lab exercise.
+     * @param {object} result Results for "noLab" option from calculateLabOptions.
+     * @param {object} prevExercisePoints Points from previous exercise topics.
+     * @param {object} prevLecturePoints Points from previous lecture topics.
+     * @param {object} quizPoints Quiz points for current topic modules.
+     * @param {object} bonusPoints Bonus points for current topic modules.
+     * @returns {string} Formatted HTML string for course performance.
+     */
+    function formatCoursePerformance(result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
+        // Determine the last topic with entered values to calculate max possible points correctly
+        let lastTopicIndex = getLastTopicWithValues(prevExercisePoints, prevLecturePoints);
+
+        // Check for current topic points existence
+        let currentTopicPointsExist = false;
+        if (quizPoints.L1 > 0 || quizPoints.L2 > 0 || quizPoints.E > 0 ||
+            bonusPoints.L1 > 0 || bonusPoints.L2 > 0 || bonusPoints.E > 0) {
+            currentTopicPointsExist = true;
+        }
+
+        if (currentTopicPointsExist) {
+            lastTopicIndex += 1; // Include current topic in max points calculation
+        }
+
+        // Calculate percentages of achieved points relative to max possible points
+        const lecturePercentage = maxLecturePointsPossible > 0 ? (result.totalLecturePoints / maxLecturePointsPossible) * 100 : 0;
+        const exercisePercentage = maxExercisePointsPossible > 0 ? (result.totalExercisePoints / maxExercisePointsPossible) * 100 : 0;
+
+        // Create HTML string to display course performance
+        let text = `<div class='performance-item'><strong>Lecture Points without Lab:</strong> ${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsPossible} (${lecturePercentage.toFixed(1)}%)</div>`;
+        text += `<div class='performance-item'><strong>Total Exercise Points without Lab:</strong> ${result.totalExercisePoints.toFixed(2)} / ${maxExercisePointsPossible} (${exercisePercentage.toFixed(1)}%)</div>`;
+        return text; // Return formatted course performance text
+    }
+
+    /**
+     * Determines the last topic number for which the user has entered exercise or lecture points.
+     * Used to calculate max possible points correctly.
+     * @param {object} prevExercisePoints Points from previous exercise topics.
+     * @param {object} prevLecturePoints Points from previous lecture topics.
+     * @returns {number} The index of the last topic with entered points (0 if no topic has points).
+     */
+    function getLastTopicWithValues(prevExercisePoints, prevLecturePoints) {
+        let lastTopic = 0;
+        for (let i = 1; i <= 3; i++) { // Check topics 1 to 3
+            const exercisePoints = parseInt(prevExercisePoints[`topic${i}`]) || 0;
+            const lecturePoints = parseInt(prevLecturePoints[`topic${i}`]) || 0;
+
+            if ((exercisePoints + lecturePoints) > 0) { // If either exercise or lecture points are > 0 (assuming user won't enter fractional points, but could be >= 0 in general)
+                lastTopic = i; // Update last topic index
+            }
+        }
+        return lastTopic; // Return the last topic index with values
+    }
+
+
+    /**
+     * Checks if the course is considered passing based on total lecture and exercise points, and minimum lecture points per topic.
+     * Passing criteria: totalExercisePoints >= 20 AND minLectureTopicPoints >= 10 for all topics.
+     * @param {number} totalLecturePoints Total lecture points achieved.
+     * @param {number} totalExercisePoints Total exercise points achieved.
+     * @param {number} currentTopicLecturePoints Lecture points in current topic (used to ensure current topic is considered).
+     * @returns {boolean} True if passing, false otherwise.
+     */
+    function isPassing(totalLecturePoints, totalExercisePoints, currentTopicLecturePoints) {
+        const lecturePointsPerTopic = getLecturePointsPerTopic(totalLecturePoints); // Get lecture points distribution per topic
+        const minLectureTopicPoints = Math.min(...lecturePointsPerTopic); // Find the minimum lecture points among all topics
+        return totalExercisePoints >= 20 && minLectureTopicPoints >= 10; // Passing condition: total exercise points and minimum lecture points per topic
+    }
+
+    /**
+     * Distributes total lecture points across 4 topics (as per the UI structure), assuming points are earned sequentially from topic 1 to topic 4.
+     * This is a simplified distribution model as actual topic point breakdown might be different.
+     * @param {number} totalLecturePoints Total lecture points to distribute.
+     * @returns {number[]} Array of lecture points per topic (length 4).
+     */
+    function getLecturePointsPerTopic(totalLecturePoints) {
+        const topicLecturePoints = [];
+        let remainingPoints = totalLecturePoints;
+        for (let i = 0; i < 4; i++) { // Assume 4 topics for lecture points distribution
+            const topicMaxPoints = 20; // Max lecture points per topic
+            const topicPoint = Math.min(remainingPoints, topicMaxPoints); // Points for current topic capped at max points per topic
+            topicLecturePoints.push(topicPoint); // Add topic points to the array
+            remainingPoints -= topicPoint; // Subtract distributed points from remaining points
+        }
+        return topicLecturePoints; // Return array of lecture points per topic
+    }
+
+
+    /**
+     * Calculates the weighted GPA based on total lecture and exercise points.
+     * Lecture is weighted 6 ECTS, Exercise is weighted 3 ECTS.
+     * @param {number} totalLecturePoints Total lecture points achieved.
+     * @param {number} totalExercisePoints Total exercise points achieved.
+     * @returns {number} Weighted GPA (lower is better).
+     */
+    function calculateGPA(totalLecturePoints, totalExercisePoints) {
+        // Calculate percentage of achieved points relative to max possible points
+        let lecturePercentage = (totalLecturePoints / maxLecturePointsPossible) * 100;
+        let exercisePercentage = (totalExercisePoints / maxExercisePointsPossible) * 100;
+
+        // Get grade for lecture and exercise based on percentage
+        let lectureGrade = getGradeFromPercentage(lecturePercentage);
+        let exerciseGrade = getGradeFromPercentage(exercisePercentage);
+
+        // Calculate weighted GPA: (Lecture grade * 6 ECTS + Exercise grade * 3 ECTS) / (Total ECTS = 9)
+        return (lectureGrade * 6 + exerciseGrade * 3) / (6 + 3);
+    }
+
+    /**
+     * Converts percentage to grade based on a predefined grade scale.
+     * Grade scale: >=90% -> 1.0, >=80% -> 2.0, >=65% -> 3.0, >=50% -> 4.0, <50% -> 5.0 (Failed).
+     * @param {number} percentage Percentage of points achieved.
+     * @returns {number} Grade (1.0 to 5.0).
+     */
+    function getGradeFromPercentage(percentage) {
+        if (percentage >= 90) return 1.0;
+        if (percentage >= 80) return 2.0;
+        if (percentage >= 65) return 3.0;
+        if (percentage >= 50) return 4.0;
+        return 5.0; // Failed
+    }
+
+
+    // --- Slider Value Display and Recalculation ---
+    const slider = document.getElementById("lab_points_slider");
+    const sliderValueDisplay = document.getElementById("slider_value");
+
+    // Update slider value display in real-time as slider is moved
+    slider.oninput = function() {
+        sliderValueDisplay.textContent = this.value;
+    }
+
+    // Recalculate strategy when slider is released (mouseup event)
+    slider.addEventListener('mouseup', function() {
+        calculateStrategy();
+    });
+</script>
+
+</body>
+</html>
