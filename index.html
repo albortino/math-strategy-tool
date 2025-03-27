@@ -3,22 +3,23 @@
 <head>
     <title>Strategy Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive scaling on devices--> 
     <style>
        /* --- Color Palette --- */
         :root {
-            --primary-color: #2e8dcb;         /* #007bff;Primary blue */
-            --secondary-color: #2b6e9b;      /* #0056b3;Darker blue (hover) */
-            --accent-color: #e74c3c;         /* Accent blue */
-            --background-color: #f4f5f8;    /* Light gray background */
-            --white-color: #fff;            /* White */
+            --primary-color: #2e8dcb;
+            --secondary-color: #2b6e9b;
+            --accent-color: #e74c3c;         
+            --background-color: #f4f5f8;    
+            --white-color: #fff; 
             --black-color: #000;
             --container-background: #fff;
             --form-background-color: #f4f5f8;
-            --text-color: #101112;          /* Dark gray text */
-            --lightest-gray-color: #e9ecef;    /* Light gray (table header) */
-            --light-gray-color: #ced4da;   /* Medium gray (form borders) */
+            --text-color: #101112;
+            --lightest-gray-color: #e9ecef;
+            --light-gray-color: #ced4da; 
             --medium-gray-color: #6c757d;
-            --dark-gray-color: #343a40;     /* Dark gray text */
+            --dark-gray-color: #343a40;
 
             /* --- Layout & Spacing Variables --- */
             --font-family-base: 'Roboto', sans-serif;
@@ -51,16 +52,14 @@
         }
 
         [data-theme="dark"] {
-            --background-color: rgb(17,23,40); /* #181818 */;     /* Deep Gray */
-            --text-color: #e7edf5;           /* Soft White */
-            --container-background: rgb(30,40,56); /* #252525;*/ /* Slightly lighter than background */
-            --form-background-color: rgb(28, 31, 41);
-            --lightest-gray-color: rgb(28,31,41); /*#333*/;    /* Darker for table headers */
-            --light-gray-color: #444;       /* Darker for borders */
-            --medium-gray-color: #999;      /* Lighter for less important text */
-            --black-color: #fff; /* White for contrast */
-            --primary-color: #64b5f6; /* Lighter blue */
-            --secondary-color: #4288c1; /* Slightly darker blue */
+            --background-color: #0c101b;
+            --text-color: #e7edf5;
+            --container-background: #1e2838; 
+            --form-background-color: #1c1f29;
+            --lightest-gray-color: #1c1f29; 
+            --light-gray-color: #444;    
+            --medium-gray-color: #999;     
+            --black-color: #fff;
         }
 
         /* --- General Styles --- */
@@ -187,14 +186,14 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: var(--margin-medium);
+            margin-bottom: var(--margin-small);
             table-layout: fixed;
         }
 
         th,
         td {
             border: var(--border-width-base) solid var(--light-gray-color);
-            padding: var(--padding-nano) var(--padding-small);
+            padding: var(--padding-nano) var(--padding-nano) var(--padding-small);
             text-align: left;
             word-wrap: break-word;
         }
@@ -432,9 +431,10 @@
         }
 
         /* --- Media Queries for Responsiveness --- */
-        @media (max-width: 926px) {
+        @media (max-width: 1050px) {
             .main-container {
                 flex-direction: column; /* Stack panels vertically on small screens */
+                border-collapse: collapse; /* Important for clean borders */            
             }
 
             .left-panel,
