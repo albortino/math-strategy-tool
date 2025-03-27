@@ -7,19 +7,36 @@
     <style>
        /* --- Color Palette --- */
         :root {
+            /* Base Colors */
             --primary-color: #2e8dcb;
             --secondary-color: #2b6e9b;
-            --accent-color: #e74c3c;         
-            --background-color: #f4f5f8;    
-            --white-color: #fff; 
-            --black-color: #000;
+            --accent-color: #e74c3c;
+            --background-color: #f4f5f8;
             --container-background: #fff;
-            --form-background-color: #f4f5f8;
             --text-color: #101112;
-            --lightest-gray-color: #e9ecef;
-            --light-gray-color: #ced4da; 
-            --medium-gray-color: #6c757d;
-            --dark-gray-color: #343a40;
+            --white-color: #fff;
+            --black-color: #000;
+            
+            /* Text Variations */
+            --text-muted: #6c757d;
+            --link-color: var(--primary-color);
+            --link-hover: var(--secondary-color);
+
+            /* Borders & Dividers */
+            --border-color: #ced4da;
+            --input-border: #ced4da;
+
+            /* Form Elements */
+            --form-background: #f4f5f8;
+            --input-background: #fff;
+            --input-disabled: #e9ecef;
+
+            /* Feedback Backgrounds */
+            --success-bg: #d4edda;
+            --warning-bg: #fff3cd;
+            --error-bg: #f8d7da;
+            --info-bg: #d1ecf1;
+            
 
             /* --- Layout & Spacing Variables --- */
             --font-family-base: 'Roboto', sans-serif;
@@ -52,15 +69,32 @@
         }
 
         [data-theme="dark"] {
+            /* Dark Mode Overrides */
             --background-color: #0c101b;
             --text-color: #e7edf5;
-            --container-background: #1e2838; 
-            --form-background-color: #1c1f29;
-            --lightest-gray-color: #1c1f29; 
-            --light-gray-color: #444;    
-            --medium-gray-color: #999;     
+            --container-background: #1e2838;
+            --form-background: #1c1f29;
             --black-color: #fff;
-        }
+
+            /* Dark Text Variations */
+            --text-muted: #95a5a6;
+            --link-color: #4aa3df;
+            --link-hover: #6cb9eb;
+
+            /* Dark Borders */
+            --border-color: #34495e;
+            --input-border: #2c3e50;
+
+            /* Dark Form Elements */
+            --input-background: #2c3e50;
+            --input-disabled: #34495e;
+
+            /* Dark Feedback Backgrounds */
+            --success-bg: rgba(46, 204, 113, 0.15);
+            --warning-bg: rgba(241, 196, 15, 0.15);
+            --error-bg: rgba(231, 76, 60, 0.15);
+            --info-bg: rgba(52, 152, 219, 0.15);
+            }
 
         /* --- General Styles --- */
         body {
