@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Strategy Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive scaling on devices--> 
@@ -9,7 +10,8 @@
         :root {
             --primary-color: #2e8dcb;
             --secondary-color: #2b6e9b;
-            --accent-color: #e74c3c;         
+            --accent-color: #e74c3c;
+            --warning-color: #950f0f; 
             --background-color: #f4f5f8;    
             --white-color: #fff; 
             --black-color: #000;
@@ -33,6 +35,8 @@
             --line-height-base: 1.6;
             --border-radius-base: 12px;
             --border-radius-small: 4px;
+            --border-radius-nano: 1px;
+            --border-radius: 50%;
             --border-width-base: 1px;
             --border-width-thick: 2px;
             --container-width: 90%;
@@ -79,26 +83,25 @@
         .content-container {
             width: var(--container-width);
             max-width: 1400px;
-            margin: 0 auto var(--margin-medium);
+            margin: 0 auto var(--margin-small);
         }
 
 
         /* --- Intro Container --- */
         .intro-container {
             background-color: var(--container-background);
-            border-bottom-left-radius: var(--border-radius-base);
-            border-bottom-right-radius: var(--border-radius-base);
-            margin-bottom: var(--margin-large);
+            border-radius: 0 var(--border-radius-base) 0;
+            margin-bottom: var(--margin-medium);
             box-shadow: var(--box-shadow);
             position: relative;
         }
 
         .intro-text {
-            padding: var(--margin-small) var(--margin-large);
+            padding: var(--padding-nano) var(--padding-large) var(--padding-base);
         }
 
         .intro-text h2 {
-            margin-bottom: var(--margin-base);
+            margin-bottom: var(--margin-small);
             font-size: var(--font-size-h2);
         }
 
@@ -107,26 +110,26 @@
         }
 
         .intro-text ol {
-            margin-left: var(--margin-medium);
+            margin-left: var(--margin-small);
             margin-bottom: var(--margin-small);
         }
 
         .warning {
-            color: var(--accent-color);
+            color: var(--warning-color);
+            font-weight: var(--font-weight-medium);
         }
 
         /* --- Theme Toggle --- */
         #dark-mode-toggle {
             display: block;
             position: absolute;
-            top: var(--margin-small);
             right: var(--margin-small);
             width: 3rem;
             height: 3rem;
             background: transparent;
             border: none;
             overflow: hidden;
-            padding: 0;
+            padding: calc(var(--margin-small) * 2); /* .intro text padding + intro-text h2 */
             cursor: pointer;
         }
 
@@ -188,29 +191,34 @@
         h2,
         h3 {
             color: var(--text-color);
-            margin-bottom: var(--margin-base);
-            margin-top: 0;
+            margin-bottom: var(--margin-small);
+            padding-top: var(--padding-small);
             font-weight: var(--font-weight-bold); 
             font-size: var(--font-size-h3); 
         }
 
         /* --- Tables --- */
-        table {
+        table,
+        .lab-options-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: var(--margin-small);
             table-layout: fixed;
+            border-radius: var(--border-radius-nano);
         }
 
         th,
-        td {
+        td,
+        .lab-options-table th,
+        .lab-options-table td {
             border: var(--border-width-base) solid var(--light-gray-color);
-            padding: var(--padding-nano) var(--padding-nano) var(--padding-small);
+            padding: var(--padding-small) var(--padding-small);
             text-align: left;
             word-wrap: break-word;
         }
 
-        th {
+        th,
+        .lab-options-table th {
             background-color: var(--lightest-gray-color);
             font-weight: var(--font-weight-medium);
             color: var(--black-color);
@@ -222,22 +230,14 @@
         }
 
         /* --- Lab Options Table --- */
-        .lab-options-table {
-            border-collapse: collapse;
-            margin-top: var(--margin-small);
-            table-layout: fixed;
-        }
-
-        .lab-options-table th,
         .lab-options-table td {
-            border: var(--border-width-base) solid var(--light-gray-color);
-            padding: var(--padding-base);
-            text-align: center;
+            text-align: right;
         }
 
-        .lab-options-table th {
-            background-color: var(--lightest-gray-color);
-            font-weight: var(--font-weight-medium);
+        .lab-options-table th:first-child,
+        .lab-options-table td:first-child {
+            text-align: left;
+            width: 100px;
         }
 
         .lab-options-table td:nth-child(4) {
@@ -251,6 +251,7 @@
         .lab-options-table th:last-child {
             border-left: var(--border-width-thick) solid var(--light-gray-color);
         }
+
 
         /* --- Form Elements --- */
         input[type="number"],
@@ -266,6 +267,7 @@
             display: block;
             background-color: var(--form-background-color);
             -webkit-appearance: none;
+            appearance: none;
             color: var(--text-color);
         }
 
@@ -291,7 +293,7 @@
             transition: background-color var(--transition-duration) ease-in-out, transform var(--transition-transform-duration) ease-in-out;
             font-weight: var(--font-weight-bold);
             padding: var(--padding-base) var(--padding-large); 
-            font-size: 1.1em; 
+            font-size: var(--font-size-base);
             border-radius: var(--border-radius-small); 
             display: inline-block;
       }
@@ -335,7 +337,7 @@
             height: var(--slider-height-width);
             background: var(--primary-color);
             border: var(--border-width-thick) solid var(--accent-primary); 
-            border-radius: 50%;
+            border-radius: var(--border-radius);
             cursor: pointer;
             position: relative;
             z-index: 2;
@@ -352,7 +354,7 @@
             height: var(--slider-height-width); 
             background: var(--primary-color);
             border: var(--border-width-thick) solid var(--accent-primary); 
-            border-radius: 50%;
+            border-radius: var(--border-radius);
             cursor: pointer;
             position: relative;
             z-index: 2;
@@ -378,7 +380,6 @@
             width: 4px; 
             height: 12px;
             background-color: var(--light-gray-color);
-            /*background: var(--medium-gray-color);*/
         }
 
         .slider-output {
@@ -432,7 +433,7 @@
         /* --- Performance Items --- */
         .performance-item {
             margin-bottom: var(--margin-small);
-            font-size: 1.1em; 
+            font-size: var(--font-size-base); 
         }
 
 
@@ -477,7 +478,7 @@
             <div class="intro-text">
                 <h2>Mathematics for AI 2 @ JKU - Strategy Tool</h2>
                 <p>
-                    Developed with &#9829; by <a href="https://github.com/albortino" target="_blank">albortino</a>. Visit me on <a href="https://www.linkedin.com/in/matsschneider" target="_blank">LinkedIn</a>. Repository: <a href="https://github.com/albortino/math-strategy-tool" target="_blank">github.com</a>
+                    Developed with &#9829; by <a href="https://github.com/albortino" rel="noopener" target="_blank">albortino</a>. Visit me on <a href="https://www.linkedin.com/in/matsschneider" rel="noopener" target="_blank">LinkedIn</a>. Repository: <a href="https://github.com/albortino/math-strategy-tool" rel="noopener" target="_blank">github.com</a>
                 </p>
                 <p>
                     The tool suggests the best lab exercise option (Lecture-lab, Exercise-lab, Combined-lab or No Lab) based on your chosen strategy.
@@ -485,7 +486,7 @@
                 <ol>
                     <li><strong>Select your strategy:</strong> Choose between "Pass Course" (safe bet), "Best GPA" (to impress) or "Max Points" (recommended).</li>
                     <li><strong>Enter previous topics points:</strong>  Provide achieved Exercise and Lecture points for each <b>completed</b> topic. Leave topics blank or type 0 if not yet completed.</li>
-                    <li><strong>Enter current topic module points:</strong> Input your Quiz and Bonus points for each module of the <b>current</b> topic for the lab exercise.</li>
+                    <li><strong>Enter current topic module points:</strong> Input your Quiz and Bonus points for each module of the <b>current</b></li>
                     <li><strong>Adjust lab points slider:</strong> Set your expected points for the lab exercise using the slider.</li>
                     <li><strong>Calculate Strategy:</strong> Click the "Calculate Strategy" button to get your optimal strategy recommendation. Press this button after any changes.</li>
                 </ol>
@@ -495,10 +496,9 @@
 
         <div class="main-container">
             <div class="left-panel">
-                <h2>Course Strategy Selector</h2>
 
                 <div class="selector">
-                    <label for="strategy">Select Strategy:</label>
+                    <label for="strategy"><h2>Select Strategy</h2></label>
                     <select id="strategy">
                         <option value="max_points">Max Points</option>
                         <option value="best_grade">Best GPA</option>
@@ -936,8 +936,8 @@
             <thead>
                 <tr>
                     <th>Lab Option</th>
-                    <th>Expected Lecture Points</th>
-                    <th>Expected Exercise Points</th>
+                    <th>Lecture Points</th>
+                    <th>Exercise Points</th>
                     <th>Total</th>
                     <th>Weighted GPA</th>
                 </tr>
