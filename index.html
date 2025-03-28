@@ -116,7 +116,8 @@
         }
 
         .intro-text ol {
-            margin: 0 0 var(--margin-small) var(--margin-small) ;
+            margin: var(--margin-base) var(--margin-small);
+            line-height: 1.75em;
         }
 
         .warning {
@@ -207,7 +208,7 @@
         .lab-options-table {
             width: 100%;
             border-collapse: collapse;
-            margin: var(--margin-small) 0;
+            margin: var(--margin-base) 0;
             table-layout: fixed;
             border-radius: var(--border-radius-nano);
         }
@@ -573,8 +574,8 @@
             </div>
 
             <div class="right-panel">
+                <!--<p>Please insert values first and click "Calculate Strategy".</p> -->
 
-                <h2>Course Performance</h2>
                 <div id="warning" class="warning">
                     <!-- warning will be displayed here if applicable -->
                 </div>
@@ -584,27 +585,21 @@
                 </div>
          
                 <h2></h2>
-                <h2>Optimal Strategy Recommendation</h2>
-                <div id="strategy_recommendation">
-                    <p>Please insert values first and click "Calculate Strategy".</p>
+                <div id="strategy_recommendation" >
                     <!-- Strategy recommendation will be displayed here -->
                 </div>
 
+                
                 <div id="recommendation_reasoning" class="recommendation-reasoning">
                     <!-- Reasoning for recommendation will be displayed here -->
-                </div>
-
+                </div>    
 
                 <h2></h2>
 
-                <h3>Lab Exercise Options</h3>
                 <div id="lab_options">
                     <!-- Expected points for each lab option will be displayed here -->
                 </div>
-                <div id="performance_chart">
-                    <!-- Performance chart will be displayed here -->
-                </div>
-
+      
                 <div class="content-container">
                     <div class="button-container">
                         <button onclick="calculateStrategy()">Calculate Strategy</button>
@@ -741,9 +736,9 @@
         const coursePerformanceText = formatCoursePerformance(labOptionsResults.noLab, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
         document.getElementById("course_performance").innerHTML = coursePerformanceText; // Display course performance
 
+        // Display warnings
         const warningText = formatWarnings();
         document.getElementById("warning").innerHTML = warningText;
-
     }
 
     /**
@@ -935,7 +930,9 @@
      * @param {object} labOptionsResults Results calculated by calculateLabOptions function.
      */
     function displayLabOptions(labOptionsResults) {
-        let optionsTableHTML = `<table class="lab-options-table">
+        let optionsTableHTML = `
+        <h3>Lab Exercise Options</h3>
+        <table class="lab-options-table">
             <thead>
                 <tr>
                     <th>Lab Option</th>
@@ -1116,8 +1113,10 @@
      * @returns {string} Formatted HTML string for strategy recommendation.
      */
     function formatStrategyRecommendation(strategy, labType) {
-        let text = "Recommended Lab Exercise: <b style='color: var(--accent-color);'>"; // Apply accent color
-            let labDisplayName = "";
+        let text = "<h2>Optimal Strategy Recommendation</h2>"
+        text += "Recommended Lab Exercise: <b style='color: var(--accent-color);'>";
+        
+        let labDisplayName = "";
 
         // Convert labType value to display-friendly lab name
         if (labType === "noLab") {
@@ -1191,7 +1190,8 @@
         const exercisePercentage = maxExercisePointsTotal > 0 ? (result.totalExercisePoints / maxExercisePointsTotal) * 100 : 0;
 
         // Create HTML string to display course performance
-        let text = `<div class='performance-item'><strong>Lecture Points without Lab:</strong> ${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal} (${lecturePercentage.toFixed(1)}%)</div>`;
+        let text = `<h2>Course Performance</h2>`
+        text += `<div class='performance-item'><strong>Lecture Points without Lab:</strong> ${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal} (${lecturePercentage.toFixed(1)}%)</div>`;
         text += `<div class='performance-item'><strong>Total Exercise Points without Lab:</strong> ${result.totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal} (${exercisePercentage.toFixed(1)}%)</div>`;
         return text; // Return formatted course performance text
     }
