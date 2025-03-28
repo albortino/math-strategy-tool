@@ -508,7 +508,7 @@
 
                 <h3>Previous Topics Points</h3>
                 <p>Please provide the points for the <b>successfully completed</b> topics (not the current one)!</p>
-                <p>Exercise: max 10 points, Lecture: max 20 points.</p>
+                <!--<p>Exercise: max 10 points, Lecture: max 20 points.</p>-->
                 <table>
                     <thead>
                         <tr>
@@ -518,15 +518,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1: CF</td><td><label for="exercise_topic1"><input type="number" id="exercise_topic1" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="lecture_topic1"><input type="number" id="lecture_topic1" value="0" min="0" max="10" step="1" placeholder="0"></label></td></tr>
-                        <tr><td>2: DC</td><td><label for="exercise_topic2"><input type="number" id="exercise_topic2" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="lecture_topic2"><input type="number" id="lecture_topic2" value="0" min="0" max="10" step="1" placeholder="0"></label></td></tr>
-                        <tr><td>3: BIT</td><td><label for="exercise_topic3"><input type="number" id="exercise_topic3" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="lecture_topic3"><input type="number" id="lecture_topic3" value="0" min="0" max="10" step="1" placeholder="0"></label></td></tr>
+                        <tr><td>1: CF</td><td><label for="exercise_topic1"><input type="number" id="exercise_topic1" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="lecture_topic1"><input type="number" id="lecture_topic1" min="0" max="10" step="1" placeholder="0-20"></label></td></tr>
+                        <tr><td>2: DC</td><td><label for="exercise_topic2"><input type="number" id="exercise_topic2" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="lecture_topic2"><input type="number" id="lecture_topic2" min="0" max="10" step="1" placeholder="0-20"></label></td></tr>
+                        <tr><td>3: BIT</td><td><label for="exercise_topic3"><input type="number" id="exercise_topic3" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="lecture_topic3"><input type="number" id="lecture_topic3" min="0" max="10" step="1" placeholder="0-20"></label></td></tr>
                         <tr><td>4: MC</td><td colspan="2"><i>Calculation in <b>Current Topic Module Points</b> below if topic 3 is completed</i></td></tr> 
                     </tbody>
                 </table>
 
                 <h3>Current Topic Module Points</h3>
-                <p>Please provide the points for the <b>current</b> topic (the one for the lab exercise).<br>Quiz: max 10 points, Bonus: max 2 points.</p>
+                <p>Please provide the points for the <b>current</b> topic (the one for the lab exercise).<!--<br>Quiz: max 10 points, Bonus: max 2 points.--></p>
 
                 <p>Tip: When playing around with different values for the second lecture quiz, you can calculate whether it's necessary to take it considering the lab exercise.</p>
                 <p>Notation: integer or floats (use '.' as decimal, e. g. 6.67)</p>
@@ -539,9 +539,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Lecture Module 1</td><td><label for="quiz_L1"><input type="number" id="quiz_L1" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="bonus_L1"><input type="number" id="bonus_L1" value="0" min="0" max="2" step="1" placeholder="0"></label></td></tr>
-                        <tr><td>Lecture Module 2</td><td><label for="quiz_L2"><input type="number" id="quiz_L2" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="bonus_L2"><input type="number" id="bonus_L2" value="0" min="0" max="2" step="1" placeholder="0"></label></td></tr>
-                        <tr><td>Exercise Module</td><td><label for="quiz_E"><input type="number" id="quiz_E" value="0" min="0" max="10" step="1" placeholder="0"></label></td><td><label for="bonus_E"><input type="number" id="bonus_E" value="0" min="0" max="2" step="1" placeholder="0"></label></td></tr>
+                        <tr><td>Lecture Module 1</td><td><label for="quiz_L1"><input type="number" id="quiz_L1" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="bonus_L1"><input type="number" id="bonus_L1" min="0" max="2" step="1" placeholder="0-2"></label></td></tr>
+                        <tr><td>Lecture Module 2</td><td><label for="quiz_L2"><input type="number" id="quiz_L2" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="bonus_L2"><input type="number" id="bonus_L2" min="0" max="2" step="1" placeholder="0-2"></label></td></tr>
+                        <tr><td>Exercise Module</td><td><label for="quiz_E"><input type="number" id="quiz_E" min="0" max="10" step="1" placeholder="0-10"></label></td><td><label for="bonus_E"><input type="number" id="bonus_E" min="0" max="2" step="1" placeholder="0-2"></label></td></tr>
                     </tbody>
                 </table>
 
