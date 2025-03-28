@@ -12,7 +12,7 @@
             --secondary-color: #2b6e9b;
             --accent-color: #e74c3c;
             --warning-color: #ca1616; 
-            --background-color: #f4f5f8;    
+            --background-color: #e2e7eb;    
             --white-color: #fff; 
             --black-color: #000;
             --container-background: #fff;
@@ -533,7 +533,7 @@
                 transform: rotate(-45deg);
                 opacity: 1;
                 animation: bounce 2.5s infinite;
-                animation-delay: 3s;
+                animation-delay: 1s;
                 z-index: 100;
                 pointer-events: none; /* non-interactive */
                 transition: opacity 0.3s ease-in-out;
@@ -544,15 +544,9 @@
             }
 
             @keyframes bounce {
-                0%, 20%, 50%, 80%, 100% {
-                    transform: translateY(0) rotate(-45deg);
-                }
-                40% {
-                    transform: translateY(8px) rotate(-45deg);
-                }
-                60% {
-                    transform: translateY(5px) rotate(-45deg);
-                }
+                0%, 20%, 50%, 80%, 100% {transform: translateY(0) rotate(-45deg);}
+                40% {transform: translateY(8px) rotate(-45deg);}
+                60% {transform: translateY(5px) rotate(-45deg);}
             }
             
         }
