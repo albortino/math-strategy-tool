@@ -117,7 +117,11 @@
 
         .intro-text ol {
             margin: var(--margin-base) var(--margin-small);
-            line-height: 1.75em;
+            line-height: 1.5em;
+        }
+
+        .intro-text li {
+            padding: var(--padding-small);
         }
 
         .warning {
@@ -141,7 +145,7 @@
 
         #dark-mode-toggle svg {
             position: absolute;
-            top: 50%;
+            top: 55%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 1.5625rem;
@@ -272,6 +276,10 @@
             white-space: nowrap;
         }
 
+        
+        .performance-table td:first-child {
+            text-align: left;    
+        }
 
         /* --- Form Elements --- */
         input[type="number"],
@@ -476,6 +484,77 @@
             body {
                 font-size: var(--font-size-small)
             }
+        }
+
+        @media (max-width: 400px) {
+            .content-container {
+                width: 93%;
+            }
+
+            .intro-container {
+            border-radius: var(--border-radius-base);
+            margin: var(--margin-base) 0 var(--margin-large);
+            }
+
+            .intro-text ol {
+                margin: var(--margin-base) var(--margin-nano);
+                line-height: 1.5em;
+            }
+
+
+            #dark-mode-toggle svg {
+                top: 55%;
+                left: 80%;
+                width: 1.3rem;
+                height: 1.3em;
+            }       
+
+            .lab-options-table th,
+            .lab-options-table td {
+                padding: var(--padding-small) var(--padding-nano);
+                word-wrap: auto;
+            }
+
+            .lab-options-table th:first-child,
+            .lab-options-table td:first-child {
+              width: auto;
+            }
+
+            /* --- Scroll Hint Arrow --- */
+            .scroll-hint {
+                position: fixed;
+                bottom: 20px;
+                align-self: center;
+                margin-right: auto;
+                width: 25px;
+                height: 25px;
+                border-bottom: 2px solid var(--accent-color);
+                border-left: 2px solid var(--accent-color);
+                transform: rotate(-45deg);
+                opacity: 1;
+                animation: bounce 2.5s infinite;
+                animation-delay: 3s;
+                z-index: 100;
+                pointer-events: none; /* non-interactive */
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            .scroll-hint.hidden {
+                opacity: 0;
+            }
+
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0) rotate(-45deg);
+                }
+                40% {
+                    transform: translateY(8px) rotate(-45deg);
+                }
+                60% {
+                    transform: translateY(5px) rotate(-45deg);
+                }
+            }
+            
         }
     </style>
 
@@ -1304,6 +1383,25 @@
     slider.addEventListener('mouseup', function() {
         calculateStrategy();
     });
+
+    // --- Scroll Hint Logic ---
+    document.addEventListener('DOMContentLoaded', () => {
+    const scrollHint = document.createElement('div');
+    scrollHint.classList.add('scroll-hint');
+    document.body.appendChild(scrollHint);
+
+    let scrollHintVisible = true;
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50 && scrollHintVisible) {
+            scrollHint.classList.add('hidden');
+            scrollHintVisible = false;
+        } else if (window.scrollY <= 50 && !scrollHintVisible) {
+            scrollHint.classList.remove('hidden');
+            scrollHintVisible = true;
+        }
+    });
+});
 </script>
 
 </body>
