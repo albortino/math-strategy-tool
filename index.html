@@ -11,7 +11,7 @@
             --primary-color: #2e8dcb;
             --secondary-color: #2b6e9b;
             --accent-color: #e74c3c;
-            --warning-color: #950f0f; 
+            --warning-color: #ca1616; 
             --background-color: #f4f5f8;    
             --white-color: #fff; 
             --black-color: #000;
@@ -436,10 +436,17 @@
             border-color: var(--primary-color);
         }
 
-        /* --- Performance Items --- */
-        .performance-item {
-            margin-bottom: var(--margin-small);
-            font-size: var(--font-size-base); 
+        /* --- Performance Table --- */
+
+        .performance-table {
+            border-collapse: collapse;
+            width: auto;
+        }
+
+        .performance-table td {
+            padding: 0 var(--margin-small) 0 0;
+            border: none;
+            white-space: nowrap;
         }
 
 
@@ -576,25 +583,21 @@
             <div class="right-panel">
                 <!--<p>Please insert values first and click "Calculate Strategy".</p> -->
 
+                <div id="course_performance">
+                    <!-- Total points and percentage will be displayed here -->
+                </div>
+
                 <div id="warning" class="warning">
                     <!-- warning will be displayed here if applicable -->
                 </div>
 
-                <div id="course_performance">
-                    <!-- Total points and percentage will be displayed here -->
-                </div>
-         
-                <h2></h2>
                 <div id="strategy_recommendation" >
                     <!-- Strategy recommendation will be displayed here -->
                 </div>
-
                 
                 <div id="recommendation_reasoning" class="recommendation-reasoning">
                     <!-- Reasoning for recommendation will be displayed here -->
                 </div>    
-
-                <h2></h2>
 
                 <div id="lab_options">
                     <!-- Expected points for each lab option will be displayed here -->
@@ -748,7 +751,7 @@
     function formatWarnings() {
         if (warningCappedInput) {
 
-            return "Warning: Some inputs were limited to maximal points allowed!<br><br>"
+            return "Warning: Some inputs were limited to maximal points allowed!<br>"
         }
         else {
             return ""
@@ -1191,9 +1194,10 @@
 
         // Create HTML string to display course performance
         let text = `<h2>Course Performance</h2>`
-        text += `<div class='performance-item'><strong>Lecture Points without Lab:</strong> ${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal} (${lecturePercentage.toFixed(1)}%)</div>`;
-        text += `<div class='performance-item'><strong>Total Exercise Points without Lab:</strong> ${result.totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal} (${exercisePercentage.toFixed(1)}%)</div>`;
-        return text; // Return formatted course performance text
+        text += `<table class="performance-table">`;
+        text += `<tr><td><strong>Lecture Points without Lab:</strong></td><td><span>${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal} (${lecturePercentage.toFixed(1)}%)</span></td></tr>`;
+        text += `<tr><td><strong>Exercise Points without Lab:</strong></td><td><span>${result.totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal} (${exercisePercentage.toFixed(1)}%)</span></td></tr>`;
+        text += `</table>`;return text; // Return formatted course performance text
     }
 
     /**
