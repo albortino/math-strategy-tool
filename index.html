@@ -219,7 +219,7 @@
         .lab-options-table td {
             border: var(--border-width-base) solid var(--light-gray-color);
             padding: var(--padding-small) var(--padding-base);
-            text-align: left;
+            text-align: center;
             word-wrap: break-word;
         }
 
@@ -235,6 +235,7 @@
             width: 80px;
         }
 
+
         /* --- Lab Options Table --- */
         .lab-options-table td {
             text-align: right;
@@ -242,7 +243,7 @@
 
         .lab-options-table th:first-child,
         .lab-options-table td:first-child {
-            text-align: left;
+            text-align: right;
             width: 100px;
         }
 
@@ -256,6 +257,19 @@
 
         .lab-options-table th:last-child {
             border-left: var(--border-width-thick) solid var(--light-gray-color);
+        }
+
+        
+        /* --- Performance Table --- */
+        .performance-table {
+            border-collapse: collapse;
+            width: auto;
+        }
+
+        .performance-table td {
+            padding: 0 var(--margin-small) 0 0;
+            border: none;
+            white-space: nowrap;
         }
 
 
@@ -436,19 +450,7 @@
             border-color: var(--primary-color);
         }
 
-        /* --- Performance Table --- */
-
-        .performance-table {
-            border-collapse: collapse;
-            width: auto;
-        }
-
-        .performance-table td {
-            padding: 0 var(--margin-small) 0 0;
-            border: none;
-            white-space: nowrap;
-        }
-
+    
 
         /* --- Recommendation Reasoning --- */
         .recommendation-reasoning {
