@@ -1,5 +1,6 @@
 # Mathematics for AI 2 - Strategy Tool
 The tool suggests the best lab exercise option (Lecture-lab, Exercise-lab, Combined-lab or No Lab) and provides an overview of the current grade for the "Mathematics for AI" lecture at JKU, Linz.
+Logic is based on the Weekly Quizzes mode: https://moodle.jku.at/course/view.php?id=34391
 
 - Select your strategy: Choose between "Pass Course" (safe bet), "Best GPA" (to impress) or "Max Points" (recommended).
 - Enter previous topics points: Provide achieved Exercise and Lecture points for each completed topic. Leave topics blank or type 0 if not yet completed.
