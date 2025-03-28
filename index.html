@@ -42,10 +42,10 @@
             --container-width: 90%;
             --padding-nano: 4px;
             --padding-small: 6px;
-            --padding-base: 12px;
+            --padding-base: 10px;
             --padding-large: 20px;
-            --margin-small: 10px;
-            --margin-base: 15px;
+            --margin-small: 8px;
+            --margin-base: 12px;
             --margin-medium: 20px;
             --margin-large: 30px;
             --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -71,6 +71,7 @@
         body {
             font-family: var(--font-family-base);
             margin: 0;
+            padding: 0;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: var(--line-height-base);
@@ -80,6 +81,11 @@
             font-size: var(--font-size-base);
         }
 
+        p,
+        i {
+            margin: var(--margin-nano) 0 var(--margin-small);
+
+        }
         .content-container {
             width: var(--container-width);
             max-width: 1400px;
@@ -90,14 +96,14 @@
         /* --- Intro Container --- */
         .intro-container {
             background-color: var(--container-background);
-            border-radius: 0 var(--border-radius-base) 0;
-            margin-bottom: var(--margin-medium);
+            border-radius: 0 0 var(--border-radius-base) var(--border-radius-base);
+            margin: 0 0 var(--margin-medium);
             box-shadow: var(--box-shadow);
             position: relative;
         }
 
         .intro-text {
-            padding: var(--padding-nano) var(--padding-large) var(--padding-base);
+            padding: var(--padding-nano) var(--padding-large) var(--padding-large);
         }
 
         .intro-text h2 {
@@ -110,8 +116,7 @@
         }
 
         .intro-text ol {
-            margin-left: var(--margin-small);
-            margin-bottom: var(--margin-small);
+            margin: 0 0 var(--margin-small) var(--margin-small) ;
         }
 
         .warning {
@@ -173,7 +178,7 @@
 
         .left-panel,
         .right-panel {
-            padding: var(--padding-large);
+            padding: var(--padding-nano) var(--padding-large);
             box-sizing: border-box;
             background-color: var(--container-background);
             border-radius: var(--border-radius-base);
@@ -191,7 +196,7 @@
         h2,
         h3 {
             color: var(--text-color);
-            margin-bottom: var(--margin-small);
+            margin-bottom: var(--margin-nano);
             padding-top: var(--padding-small);
             font-weight: var(--font-weight-bold); 
             font-size: var(--font-size-h3); 
@@ -202,7 +207,7 @@
         .lab-options-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: var(--margin-small);
+            margin: var(--margin-small) 0;
             table-layout: fixed;
             border-radius: var(--border-radius-nano);
         }
@@ -212,7 +217,7 @@
         .lab-options-table th,
         .lab-options-table td {
             border: var(--border-width-base) solid var(--light-gray-color);
-            padding: var(--padding-small) var(--padding-small);
+            padding: var(--padding-small) var(--padding-base);
             text-align: left;
             word-wrap: break-word;
         }
@@ -257,7 +262,7 @@
         input[type="number"],
         select {
             padding: var(--padding-base); 
-            margin: var(--padding-small) 0;
+            margin: var(--margin-nano) 0;
             border: var(--border-width-base) solid var(--light-gray-color);
             border-radius: var(--border-radius-small);
             box-sizing: border-box;
@@ -313,8 +318,8 @@
         .slider-container {
             display: flex;
             align-items: center;
-            gap: var(--margin-small);
-            margin-bottom: var(--margin-small);
+            gap: var(--margin-base);
+            margin: var(--margin-base) 0;
             position: relative;
             height: 20px;
         }
@@ -420,7 +425,7 @@
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
-            background-size: 10px;
+            background-size: 12px;
             cursor: pointer;
         }
 
@@ -466,8 +471,6 @@
 
 </head>
 <body>
-
-
     <div class="content-container">
         <div class="intro-container">
             <div id="dark-mode-toggle" class="theme-toggle" onclick="toggleTheme()">
@@ -481,7 +484,8 @@
                     Developed with &#9829; by <a href="https://github.com/albortino" rel="noopener" target="_blank">albortino</a>. Visit me on <a href="https://www.linkedin.com/in/matsschneider" rel="noopener" target="_blank">LinkedIn</a>. Repository: <a href="https://github.com/albortino/math-strategy-tool" rel="noopener" target="_blank">github.com</a>
                 </p>
                 <p>
-                    The tool suggests the best lab exercise option (Lecture-lab, Exercise-lab, Combined-lab or No Lab) based on your chosen strategy.
+                    The tool suggests the best lab exercise option (Lecture-lab, Exercise-lab, Combined-lab or No Lab) based on your chosen strategy.<br>
+                    Feel free to playaround with different values for the inputs, e.g. you can determine how important a Quiz.</p>
                 </p>
                 <ol>
                     <li><strong>Select your strategy:</strong> Choose between "Pass Course" (safe bet), "Best GPA" (to impress) or "Max Points" (recommended).</li>
@@ -507,7 +511,7 @@
                 </div>
 
                 <h3>Previous Topics Points</h3>
-                <p>Please provide the points for the <b>successfully completed</b> topics (not the current one)!</p>
+                <p>Please provide the points for all <b>successfully completed</b> topics (not the current one)!</p>
                 <!--<p>Exercise: max 10 points, Lecture: max 20 points.</p>-->
                 <table>
                     <thead>
@@ -528,8 +532,7 @@
                 <h3>Current Topic Module Points</h3>
                 <p>Please provide the points for the <b>current</b> topic (the one for the lab exercise).<!--<br>Quiz: max 10 points, Bonus: max 2 points.--></p>
 
-                <p>Tip: When playing around with different values for the second lecture quiz, you can calculate whether it's necessary to take it considering the lab exercise.</p>
-                <p>Notation: integer or floats (use '.' as decimal, e. g. 6.67)</p>
+                <!--<p>Notation: integer or floats (use '.' as decimal, e. g. 6.67)</p> -->
                 <table>
                     <thead>
                         <tr>
