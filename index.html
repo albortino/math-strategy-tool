@@ -957,28 +957,16 @@
          * @param {object} bonusPoints Bonus points for the current topic modules.
          */
         function recalculateMaxPoints(prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
-            maxLecturePointsTotal = 0;
-            maxExercisePointsTotal = 0;
+            maxLecturePointsTotal = maxLecturePoints;
+            maxExercisePointsTotal = maxExercisePoints;
 
             // Determine the index of the last topic with entered points in previous topics
             let lastTopicIndex = getLastTopicWithValues(prevExercisePoints, prevLecturePoints);
 
-            // Check if there are any points entered for the current topic
-            let currentTopicPointsExist = false;
-            if (quizPoints.L1 > 0 || quizPoints.L2 > 0 || quizPoints.E > 0 ||
-                bonusPoints.L1 > 0 || bonusPoints.L2 > 0 || bonusPoints.E > 0) {
-                currentTopicPointsExist = true;
-            }
-
-            // If current topic points exist, increment lastTopicIndex to include the current topic in max points calculation
-            if (currentTopicPointsExist) {
-                lastTopicIndex += 1;
-            }
-
             // Calculate max points based on the number of topics considered (previous and current if applicable)
             for (let i = 1; i <= lastTopicIndex; i++) {
-                maxLecturePointsTotal += 20; // Each topic has a max of 20 lecture points
-                maxExercisePointsTotal += 10; // Each topic has a max of 10 exercise points
+                maxLecturePointsTotal += maxLecturePoints; // Each topic has a max of 20 lecture points
+                maxExercisePointsTotal += maxExercisePoints; // Each topic has a max of 10 exercise points
             }
         }
 
@@ -1025,8 +1013,8 @@
             } // "noLab" has labPoints = 0, so no allocation needed
 
             // Calculate total lecture and exercise points, capped at max per topic
-            const lecturePoints = Math.min(lectureLabPoints + mL1 + mL2, 20); // Max 20 lecture points per topic
-            const exercisePoints = Math.min(exerciseLabPoints + mE, 10);   // Max 10 exercise points per topic
+            const lecturePoints = Math.min(lectureLabPoints + mL1 + mL2, maxLecturePoints);
+            const exercisePoints = Math.min(exerciseLabPoints + mE, maxExercisePoints); 
             return { lecturePoints: lecturePoints, exercisePoints: exercisePoints };
         }
 
@@ -1152,8 +1140,8 @@
             const currentTopicLecturePointsNoLab = currentTopicNoLabPoints.lecturePoints;
 
             // Check if current topic modules are passing (>= 50% of max points for each module type)
-            const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= 5; // Exercise max is 10, 50% is 5
-            const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= 10; // Lecture max is 20, 50% is 10
+            const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= maxExercisePoints / 2;
+            const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= maxLecturePoints / 2;
 
 
             if (strategy === "pass") { // "Pass Course" strategy
@@ -1407,8 +1395,7 @@
             const topicLecturePoints = [];
             let remainingPoints = totalLecturePoints;
             for (let i = 0; i < 4; i++) { // Assume 4 topics for lecture points distribution
-                const topicMaxPoints = 20; // Max lecture points per topic
-                const topicPoint = Math.min(remainingPoints, topicMaxPoints); // Points for current topic capped at max points per topic
+                const topicPoint = Math.min(remainingPoints, maxLecturePoints); // Points for current topic capped at max points per topic
                 topicLecturePoints.push(topicPoint); // Add topic points to the array
                 remainingPoints -= topicPoint; // Subtract distributed points from remaining points
             }
