@@ -8,4 +8,6 @@ Logic is based on the Weekly Quizzes mode: https://moodle.jku.at/course/view.php
 - Adjust lab points slider: Set your expected points for the lab exercise using the slider.
 - Calculate Strategy: Click the "Calculate Strategy" button to get your optimal strategy recommendation. Press this button after any changes.
 
+Find your best strategy: https://albortino.github.io/math-strategy-tool/
+
 Collabortion highly welcome!
