@@ -681,21 +681,21 @@
                             <td>1: CF</td>
                             <td><label for="exercise_topic1"><input type="number" id="exercise_topic1" min="0" max="10"
                                         step="1" placeholder="0-10"></label></td>
-                            <td><label for="lecture_topic1"><input type="number" id="lecture_topic1" min="0" max="10"
+                            <td><label for="lecture_topic1"><input type="number" id="lecture_topic1" min="0" max="20"
                                         step="1" placeholder="0-20"></label></td>
                         </tr>
                         <tr>
                             <td>2: DC</td>
                             <td><label for="exercise_topic2"><input type="number" id="exercise_topic2" min="0" max="10"
                                         step="1" placeholder="0-10"></label></td>
-                            <td><label for="lecture_topic2"><input type="number" id="lecture_topic2" min="0" max="10"
+                            <td><label for="lecture_topic2"><input type="number" id="lecture_topic2" min="0" max="20"
                                         step="1" placeholder="0-20"></label></td>
                         </tr>
                         <tr>
                             <td>3: BIT</td>
                             <td><label for="exercise_topic3"><input type="number" id="exercise_topic3" min="0" max="10"
                                         step="1" placeholder="0-10"></label></td>
-                            <td><label for="lecture_topic3"><input type="number" id="lecture_topic3" min="0" max="10"
+                            <td><label for="lecture_topic3"><input type="number" id="lecture_topic3" min="0" max="20"
                                         step="1" placeholder="0-20"></label></td>
                         </tr>
                         <tr>
@@ -971,13 +971,13 @@
 
         /**
          * Calculates module points based on quiz and bonus points, with a maximum of 10 points per module.
-         * Formula: 𝑚𝑖=min(𝑞𝑖+𝑏𝑖,10)
+         * Formula: 𝑚𝑖=min(𝑞𝑖+𝑏𝑖,10) (qi = quiz, bi = bonus points)
          * @param {number} quiz Quiz points for the module.
          * @param {number} bonus Bonus points for the module.
          * @returns {number} Module points (maximum 10).
          */
         function calculateModulePoints(quiz, bonus) {
-            return Math.min(quiz + bonus, 10); // Formula 𝑚𝑖=min(𝑞𝑖+𝑏𝑖,10)
+            return Math.min(quiz + bonus, 10);
         }
 
         /**
@@ -1133,6 +1133,7 @@
             let bestResult = labOptionsResults["noLab"]; // Default best result is "noLab"
             let reasoning = ""; // Initialize reasoning for recommendation
 
+
             // Calculate points for current topic if "no lab" is chosen (to check passing status)
             const currentTopicNoLabPoints = calculateCurrentTopicPointsNoLab(quizPoints, bonusPoints);
             const currentTopicExercisePointsNoLab = currentTopicNoLabPoints.exercisePoints;
@@ -1142,22 +1143,29 @@
             const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= maxExercisePoints / 2;
             const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= maxLecturePoints / 2;
 
+            const numberOfPrevTopics = getLastTopicWithValues(prevExercisePoints, prevLecturePoints)
 
-            if (strategy === "pass") { // "Pass Course" strategy
+            // Prioritize passing the excercise if previous lecture points below threshold regardless of the strategy
+            if (!isPassingLecture(numberOfPrevTopics, prevLecturePoints)) { 
+                reasoning = "Reasoning: Prioritizing passing the exercise as a previous lecture topic did not reach at least 10 points, so the big exam has to be made.";
+                bestLabType = "exercise"; // Excercise-lab as lecture does not make sense anymore
+                bestResult = labOptionsResults["exercise"];       
+
+            } else if (strategy === "pass") { // "Pass Course" strategy
                 let passingStrategies = []; // Array to hold lab options that result in passing the course
                 let nonPassingStrategies = []; // Array to hold lab options that do not result in passing
 
                 // Separate lab options into passing and non-passing strategies
                 for (const labType in labOptionsResults) {
                     const result = labOptionsResults[labType];
-                    if (isPassing(result.totalLecturePoints, result.totalExercisePoints, result.currentLecturePoints)) {
+                    if (isPassing(result.totalLecturePoints, result.totalExercisePoints)) {
                         passingStrategies.push(result); // Add to passing strategies if it leads to passing
                     } else {
                         nonPassingStrategies.push(result); // Add to non-passing strategies otherwise
                     }
                 }
 
-                // Prioritize passing the current topic if current topic modules are not passing yet
+                // Prioritize passing current topic if current topic modules are not passing yet
                 if (!isCurrentTopicExercisePassing || !isCurrentTopicLecturePassing) {
 
                     reasoning = "Reasoning: Prioritizing passing current topic because ";
@@ -1176,7 +1184,7 @@
                     }
 
                 } else { // If current topic is already passing, focus on overall course pass/maximize points while passing
-                    if (!isPassing(bestResult.totalLecturePoints, bestResult.totalExercisePoints, bestResult.currentLecturePoints)) { // if overall not passing with "noLab"
+                    if (!isPassing(bestResult.totalLecturePoints, bestResult.totalExercisePoints)) { // if overall not passing with "noLab"
                         if (passingStrategies.length > 0) {
                             reasoning = "Current topic modules are ok, but prioritizing overall course pass. Maximizing total points while ensuring passing status.";
                             passingStrategies.sort((a, b) => (b.totalLecturePoints + b.totalExercisePoints) - (a.totalLecturePoints + a.totalExercisePoints)); // Sort passing strategies by total points (descending)
@@ -1291,24 +1299,6 @@
 
             text += `${labDisplayName}</b>.`; // Add lab display name to the recommendation text
 
-            /* UNNECESSARY
-            // Add strategy-specific explanation to the recommendation text
-            if (strategy === "pass") {
-                text += "<br>This option has the highest probability to pass the course.";
-            } else if (strategy === "best_grade") {
-                if (labType.includes("or")) {
-                    text += "<br>These options are estimated to minimize your GPA.";
-                } else {
-                    text += "<br>This option is estimated to minimize your GPA.";
-                }
-            } else if (strategy === "max_points") {
-                if (labType.includes("or")) {
-                    text += "<br>These options are estimated to maximize your total points.";
-                } else {
-                    text += "<br>This option is estimated to maximize your total points.";
-                }
-            }
-            */
             return text; // Return the formatted recommendation text
         }
 
@@ -1372,21 +1362,65 @@
 
         /**
          * Checks if the course is considered passing based on total lecture and exercise points, and minimum lecture points per topic.
-         * Passing criteria: totalExercisePoints >= 20 AND minLectureTopicPoints >= 10 for all topics.
+         * Only works if there are points for every topic! Use isPassingLecture function to calculate it only for the lecture.
+         * Passing criteria: totalExercisePoints >= 20 AND (minLectureTopicPoints >= 10 for every topics).
          * @param {number} totalLecturePoints Total lecture points achieved.
          * @param {number} totalExercisePoints Total exercise points achieved.
-         * @param {number} currentTopicLecturePoints Lecture points in current topic (used to ensure current topic is considered).
          * @returns {boolean} True if passing, false otherwise.
          */
-        function isPassing(totalLecturePoints, totalExercisePoints, currentTopicLecturePoints) {
+        function isPassing(totalLecturePoints, totalExercisePoints) {
             const lecturePointsPerTopic = getLecturePointsPerTopic(totalLecturePoints); // Get lecture points distribution per topic
             const minLectureTopicPoints = Math.min(...lecturePointsPerTopic); // Find the minimum lecture points among all topics
             return totalExercisePoints >= 20 && minLectureTopicPoints >= 10; // Passing condition: total exercise points and minimum lecture points per topic
         }
 
         /**
+         * Checks if the lecture points for a specified number of previous topics are all passing (at least 10 points each).
+         * @param {number} numberOfPrevTopics The number of previous topics to check.
+         * @param {object} prevLecturePoints An object where keys are topic names (e.g., "topic1", "topic2") and values are the lecture points for that topic.
+         * @returns {boolean} True if all specified previous topics have at least 10 lecture points, false otherwise.
+         */
+        function isPassingLecture(numberOfPrevTopics, prevLecturePoints) {
+        // Validate inputs
+        if (typeof numberOfPrevTopics !== 'number' || numberOfPrevTopics < 0) {
+            throw new Error("numberOfPrevTopics must be a non-negative number.");
+            return false;
+        }
+
+        if (typeof prevLecturePoints !== 'object' || prevLecturePoints === null) {
+            throw new Error("prevLecturePoints must be a non-null object.");
+            return false;
+        }
+
+        // Iterate over the specified number of previous topics
+        for (let i = 1; i <= numberOfPrevTopics; i++) {
+            const topicKey = `topic${i}`;
+
+            // Check if the topic exists in prevLecturePoints
+            if (prevLecturePoints.hasOwnProperty(topicKey)) {
+            const lecturePoints = prevLecturePoints[topicKey];
+
+            // Check if the lecture points are valid and at least 10
+            if (typeof lecturePoints !== 'number' || lecturePoints < 0) {
+                throw new Error(`Invalid lecture points for ${topicKey}: ${lecturePoints}. Points must be a non-negative number.`);
+                return false; // Or throw an error
+            }
+            if (lecturePoints < 10) {
+                return false; // If any topic has less than 10 points, return false
+            }
+            } else {
+            throw new Error(`Topic ${topicKey} not found in prevLecturePoints.`);
+            return false; // Or handle missing topics differently, e.g., assume they are not passing
+            }
+        }
+
+        // If all specified topics have at least 10 points, return true
+        return true;
+        }
+
+
+        /**
          * Distributes total lecture points across 4 topics (as per the UI structure), assuming points are earned sequentially from topic 1 to topic 4.
-         * This is a simplified distribution model as actual topic point breakdown might be different.
          * @param {number} totalLecturePoints Total lecture points to distribute.
          * @returns {number[]} Array of lecture points per topic (length 4).
          */
