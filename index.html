@@ -58,7 +58,7 @@
         }
 
         [data-theme="dark"] {
-            --background-color: #0c101b;
+            --background-color:hsl(224, 38%, 9%);
             --text-color: #e7edf5;
             --container-background: #1e2838;
             --form-background-color: #1c1f29;
@@ -286,23 +286,6 @@
         }
 
 
-        /* --- Performance Table --- */
-        .performance-table {
-            border-collapse: collapse;
-            width: auto;
-        }
-
-        .performance-table td {
-            padding: 0 var(--margin-small) 0 0;
-            border: none;
-            white-space: nowrap;
-        }
-
-
-        .performance-table td:first-child {
-            text-align: left;
-        }
-
         /* --- Form Elements --- */
         input[type="number"],
         select {
@@ -502,6 +485,47 @@
             margin-top: var(--margin-small);
         }
 
+        /* --- Styling for Collapsible Instructions --- */
+        .instructions-details {
+            margin: var(--margin-base) 0 var(--margin-small);
+            padding: var(--padding-base);
+            border: 1px solid var(--light-gray-color);
+            border-radius: var(--border-radius-small);
+            background-color: var(--form-background-color); /* Match form background */
+        }
+
+        .instructions-summary {
+            cursor: pointer; 
+            font-weight: var(--font-weight-medium);
+            color: var(--text-color);
+            outline: none;
+            list-style: none; /* Hide default marker in Firefox/Safari if needed */
+        }
+
+        /* Arrow from selector class */
+        .instructions-summary::before {
+            content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23FFFFFF%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23FFFFFF%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+            transform: rotate(-90deg); /* Expanded state indicator */
+            display: inline-block;
+            margin-right: var(--margin-small);
+            transition: transform 0.2s ease-in-out;
+            font-size: 0.8em;
+        }
+
+        body[data-theme="light"] .instructions-summary::before {
+            content: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        }
+
+        .instructions-details[open] > .instructions-summary::before {
+            transform: rotate(0deg); /* Rotate down */
+        }
+
+        .instructions-details ol {
+            margin-top: var(--margin-base); /* Space between summary and list */
+            padding-left: var(--padding-large); /* Indent the list items */
+        }
+
+
         /* --- Media Queries for Responsiveness --- */
         @media (max-width: 1050px) {
             .panel-container {
@@ -633,22 +657,25 @@
                         target="_blank">Repository on Github.</a>
                 </p>
                 <p>
-                    This (unofficial) tool helps you to better understand the grading scheme of the lecture and exercise. Moreover, it suggests the best lab exercise option based on your chosen strategy.<br>
+                    This (unofficial) tool helps you to better understand the grading scheme of the lecture and exercise. It suggests the best lab exercise option based on your chosen strategy and calculates the grades (GPA).<br>
                     Feel free to play around with different values for the inputs, e. g. you can determine how important a
                     Quiz is to pass the course.</p>
                 </p>
-                <ol>
-                    <li><strong>Select your strategy:</strong> Choose between "Pass Course" (safe bet), "Best GPA" (to
-                        impress) or "Max Points" (recommended).</li>
-                    <li><strong>Enter previous topics points:</strong> Provide achieved exercise and lecture points for
-                        each <b>completed</b> topic. Leave topics blank or type 0 if not yet completed.</li>
-                    <li><strong>Enter current topic module points:</strong> Input your Quiz and Bonus points for each
-                        module of the <b>current</b></li>
-                    <li><strong>Adjust lab points slider:</strong> Set your expected points for the lab exercise using
-                        the slider.</li>
-                    <li><strong>Calculate Strategy:</strong> Click the "Calculate Strategy" button to get your optimal
-                        strategy recommendation. Press this button after any changes.</li>
-                </ol>
+                <details class="instructions-details">
+                    <summary class="instructions-summary">Expand for detailed instructions</summary>
+                    <ol>
+                        <li><strong>Select your strategy:</strong> Choose between "Pass Course" (safe bet), "Best GPA" (to
+                            impress) or "Max Points" (recommended).</li>
+                        <li><strong>Enter previous topics points:</strong> Provide achieved exercise and lecture points for
+                            each <b>completed</b> topic. Leave topics blank or type 0 if not yet completed.</li>
+                        <li><strong>Enter current topic module points:</strong> Input your Quiz and Bonus points for each
+                            module of the <b>current</b></li>
+                        <li><strong>Adjust lab points slider:</strong> Set your expected points for the lab exercise using
+                            the slider.</li>
+                        <li><strong>Calculate Strategy:</strong> Click the "Calculate Strategy" button to get your optimal
+                            strategy recommendation. Press this button after any changes.</li>
+                    </ol>
+                </details>
 
             </div>
         </section>
@@ -769,10 +796,6 @@
             <div class="right-panel">
                 <!--<p>Please insert values first and click "Calculate Strategy".</p> -->
 
-                <div id="course_performance">
-                    <!-- Total points and percentage will be displayed here -->
-                </div>
-
                 <div id="warning" class="warning">
                     <!-- warning will be displayed here if applicable -->
                 </div>
@@ -788,6 +811,11 @@
                 <div id="lab_options">
                     <!-- Expected points for each lab option will be displayed here -->
                 </div>
+
+                <div id="course_performance">
+                    <!-- Total points, percentage and GDP for lecture and exercise will be displayed here -->
+                </div>
+
 
                 <div class="content-container">
                     <div class="button-container" >
@@ -896,9 +924,9 @@
             document.getElementById("strategy_recommendation").innerHTML = strategyRecommendationText; // Display strategy recommendation
             document.getElementById("recommendation_reasoning").textContent = bestStrategyResult.reasoning; // Display reasoning for the recommendation
 
-            // Display overall course performance (points and percentages)
-            const coursePerformanceText = formatCoursePerformance(labOptionsResults.noLab, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
-            document.getElementById("course_performance").innerHTML = coursePerformanceText; // Display course performance
+            // Display overall course grading (points and percentages)
+            const courseGradingText = formatcourseGrading(bestStrategyResult.result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
+            document.getElementById("course_performance").innerHTML = courseGradingText; // Display course grading
 
             // Display warnings
             const warningText = formatWarnings();
@@ -1083,6 +1111,7 @@
         function displayLabOptions(labOptionsResults) {
             let optionsTableHTML = `
         <h3>Lab Exercise Options</h3>
+        <p>Please note: 'No Lab' shows your current performance.</p>
         <table class="lab-options-table">
             <thead>
                 <tr>
@@ -1104,12 +1133,14 @@
                 else if (labType === "exercise") labName = "Exercise-lab";
                 else if (labType === "combined") labName = "Combined-lab";
 
+                let totalLabOptionPoints = (result.totalLecturePoints + result.totalExercisePoints);
+
                 optionsTableHTML += `
                 <tr>
                     <td>${labName}</td>
                     <td>${result.totalLecturePoints.toFixed(2)}</td>
                     <td>${result.totalExercisePoints.toFixed(2)}</td>
-                    <td>${(result.totalLecturePoints + result.totalExercisePoints).toFixed(2)}</td>
+                    <td>${totalLabOptionPoints.toFixed(2)} (${((totalLabOptionPoints*100)/(maxLecturePointsTotal + maxExercisePointsTotal)).toFixed(0)}%)</td>
                     <td>${result.gpa.toFixed(2)}</td>
                 </tr>`;
             }
@@ -1132,7 +1163,7 @@
         function getBestStrategy(strategy, labOptionsResults, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
             let bestLabType = "noLab"; // Default best lab type
             let bestResult = labOptionsResults["noLab"]; // Default best result is "noLab"
-            let reasoning = ""; // Initialize reasoning for recommendation
+            let reasoning = "Reasoning: No lab options available to evaluate."; // Initialize reasoning for recommendation
 
 
             // Calculate points for current topic if "no lab" is chosen (to check passing status)
@@ -1237,21 +1268,41 @@
                     }
                 }
                 bestLabType = bestLabTypes.join(" or "); // If multiple best lab types, join them with " or "
+
+
             } else if (strategy === "max_points") { // "Max Points" strategy
                 reasoning = "Reasoning: Prioritizing maximizing total points.";
-                let maxTotalPoints = -1; // Initialize with -1 to ensure the first option is always better
-                let bestLabTypes = []; // Array to store multiple best lab types in case of a tie in total points
-
-                // Find lab option(s) with the maximum total points
+                let maxTotalPoints = -1; // Initialize with -1 and later find the maximum total points achievable
                 for (const labType in labOptionsResults) {
                     const result = labOptionsResults[labType];
-                    if (result.totalPoints > maxTotalPoints) { // If current total points are greater than current max
-                        maxTotalPoints = result.totalPoints; // Update maximum total points
-                        bestLabTypes = [labType]; // Reset best lab types array with current lab type
-                        bestResult = result;
-                    } else if (result.totalPoints === maxTotalPoints) { // If current total points are equal to current max (tie)
-                        bestLabTypes.push(labType); // Add current lab type to the array of best lab types
+                    if (result.totalPoints > maxTotalPoints) {
+                        maxTotalPoints = result.totalPoints;
                     }
+                }
+                let bestGpa = 5.1;
+                let bestLabTypes = []; // Array to store multiple best lab types in case of a tie in total points. Used for recommendation string
+
+                // Find lab option(s) with the maximum total points and return the one with the lowest (=best GPA)
+                for (const labType in labOptionsResults) {
+                    const result = labOptionsResults[labType];
+                    if (result.totalPoints === maxTotalPoints) { // If current total points are greater than current max
+                        
+                        const currentGpa = calculateGPA(result.totalLecturePoints, result.totalExercisePoints);
+                        bestLabTypes.push(result.labType); // Add this type to the list
+
+                        if (currentGpa < bestGpa) { // New best GPA found among the max point options
+                            bestGpa = currentGpa;
+                            bestLabTypes = [result.labType]; // Reset the list to only this type
+                            bestResult = result; // Update the single best result object
+
+                        } else if (currentGpa === bestGpa) { // Tie in GPA among the max point options
+                            // Keep the first bestResult found with this GPA, or update if needed to ensure bestResult holds one of the best options
+                            if (!bestResult || calculateGPA(bestResult.totalLecturePoints, bestResult.totalExercisePoints) > currentGpa) {
+                                bestResult = result;
+                            }
+                        }
+                        // If currentGpa > bestGpa, do nothing (worse GPA)
+                    } 
                 }
                 bestLabType = bestLabTypes.join(" or "); // If multiple best lab types, join them with " or "
             }
@@ -1264,6 +1315,7 @@
             };
         }
 
+        
 
         /**
          * Formats the strategy recommendation text for display in the HTML.
@@ -1304,42 +1356,86 @@
         }
 
         /**
-         * Formats the course performance text for display in the HTML.
-         * Displays lecture and exercise points and percentages without lab exercise.
-         * @param {object} result Results for "noLab" option from calculateLabOptions.
-         * @param {object} prevExercisePoints Points from previous exercise topics.
-         * @param {object} prevLecturePoints Points from previous lecture topics.
-         * @param {object} quizPoints Quiz points for current topic modules.
-         * @param {object} bonusPoints Bonus points for current topic modules.
-         * @returns {string} Formatted HTML string for course performance.
+         * Formats the estimated course grading details into an HTML table based on the best strategy result.
+         * Displays lecture, exercise, and combined points, percentages, grades, and the weighted GPA.
+         * Assumes global variables `maxLecturePointsTotal` and `maxExercisePointsTotal` are correctly calculated and accessible.
+         *
+         * @param {object} result - The result object corresponding to the recommended strategy.
+         *                          Expected properties: totalLecturePoints, totalExercisePoints, gpa.
+         * @param {object} prevExercisePoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
+         * @param {object} prevLecturePoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
+         * @param {object} quizPoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
+         * @param {object} bonusPoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
+         * @returns {string} An HTML string representing the formatted course grading table and surrounding text.
          */
-        function formatCoursePerformance(result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
-            // Determine the last topic with entered values to calculate max possible points correctly
-            let lastTopicIndex = getLastTopicWithValues(prevExercisePoints, prevLecturePoints);
+         function formatcourseGrading(result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
+            // --- Extract Data from Result ---
+            const totalLecturePoints = result.totalLecturePoints;
+            const totalExercisePoints = result.totalExercisePoints;
+            const weightedGpa = result.gpa;
 
-            // Check for current topic points existence
-            let currentTopicPointsExist = false;
-            if (quizPoints.L1 > 0 || quizPoints.L2 > 0 || quizPoints.E > 0 ||
-                bonusPoints.L1 > 0 || bonusPoints.L2 > 0 || bonusPoints.E > 0) {
-                currentTopicPointsExist = true;
-            }
+            // --- Calculate Derived Values ---
+            const totalCombinedPoints = totalLecturePoints + totalExercisePoints;
+            const maxCombinedPointsTotal = maxLecturePointsTotal + maxExercisePointsTotal;
 
-            if (currentTopicPointsExist) {
-                lastTopicIndex += 1; // Include current topic in max points calculation
-            }
+            // Calculate percentages (handle division by zero if max points are 0)
+            const lecturePercentage = maxLecturePointsTotal > 0 ? (totalLecturePoints / maxLecturePointsTotal) * 100 : 0;
+            const exercisePercentage = maxExercisePointsTotal > 0 ? (totalExercisePoints / maxExercisePointsTotal) * 100 : 0;
+            const combinedPercentage = maxCombinedPointsTotal > 0 ? (totalCombinedPoints / maxCombinedPointsTotal) * 100 : 0; 
 
-            // Calculate percentages of achieved points relative to max possible points
-            const lecturePercentage = maxLecturePointsTotal > 0 ? (result.totalLecturePoints / maxLecturePointsTotal) * 100 : 0;
-            const exercisePercentage = maxExercisePointsTotal > 0 ? (result.totalExercisePoints / maxExercisePointsTotal) * 100 : 0;
+            // Calculate individual grades
+            const lectureGrade = getGradeFromPercentage(lecturePercentage);
+            const exerciseGrade = getGradeFromPercentage(exercisePercentage);
 
-            // Create HTML string to display course performance
-            let text = `<h3>Course Performance</h3>`
-            text += `<table class="performance-table">`;
-            text += `<tr><td><strong>Lecture points without lab:</strong></td><td><span>${result.totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal} (${lecturePercentage.toFixed(1)}%)</span></td></tr>`;
-            text += `<tr><td><strong>Exercise points without lab:</strong></td><td><span>${result.totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal} (${exercisePercentage.toFixed(1)}%)</span></td></tr>`;
-            text += `</table>`; return text; // Return formatted course performance text
+            // HTML table
+            // Header and introductory paragraph
+            let htmlOutput = `<h3>Course Grading with Recommended Strategy</h3>`;
+            htmlOutput += `<p>Points and grades are calculated based on the recommended lab option. Note that for the lecture at least 10 points in every topic must be reached, which is not considered here.</p>`;
+
+            // Headers
+            htmlOutput += `<table class="lab-options-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Points / Max</th>
+                                    <th>% Achieved</th>
+                                    <th>GPA</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            // Lecture Row
+            htmlOutput += `<tr>
+                               <td>Lecture</td>
+                               <td>${totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal}</td>
+                               <td>${lecturePercentage.toFixed(0)}%</td>
+                               <td>${lectureGrade.toFixed(1)}</td>
+                           </tr>`;
+
+            // Exercise Row
+            htmlOutput += `<tr>
+                               <td>Exercise</td>
+                               <td>${totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal}</td>
+                               <td>${exercisePercentage.toFixed(0)}%</td>
+                               <td>${exerciseGrade.toFixed(1)}</td>
+                           </tr>`;
+
+            // Combined Row
+            htmlOutput += `<tr>
+                               <td>Combined</td>
+                               <td>${totalCombinedPoints.toFixed(2)} / ${maxCombinedPointsTotal}</td>
+                               <td>${combinedPercentage.toFixed(0)}%</td>
+                               <td>ø ${weightedGpa.toFixed(2)}</td>
+                           </tr>`;
+
+            // Close table structure
+            htmlOutput += `   </tbody>
+                        </table>`;
+
+            return htmlOutput;
         }
 
+        
         /**
          * Determines the last topic number for which the user has entered exercise or lecture points.
          * Used to calculate max possible points correctly.
