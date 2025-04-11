@@ -699,9 +699,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Topic</th>
-                            <th>Exercise Points</th>
-                            <th>Lecture Points</th>
+                            <th scope="col">Topic</th>
+                            <th scope="col">Exercise Points</th>
+                            <th scope="col">Lecture Points</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -735,14 +735,13 @@
                 </table>
 
                 <h3>Current Topic Module Points</h3>
-                <p>Please provide the points for the <b>current</b> topic (the one for the lab
-                    exercise).<!--<br>Quiz: max 10 points, Bonus: max 2 points.--></p>
+                <p>Please provide the points for modules within the <b>current</b> topic (the one for the lab exercise).<!--<br>Quiz: max 10 points, Bonus: max 2 points.--></p>
                 <table>
                     <thead>
                         <tr>
-                            <th>Module</th>
-                            <th>Quiz Points</th>
-                            <th>Bonus Points</th>
+                            <th scope="col">Module</th>
+                            <th scope="col">Quiz Points</th>
+                            <th scope="col">Bonus Points</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -829,14 +828,7 @@
 
     <script>
         // Global variables to store max possible points, calculated in recalculateMaxPoints()
-        let maxLecturePointsTotal = 0;
-        let maxExercisePointsTotal = 0;
-
-        let maxLecturePoints = 20;
-        let maxExercisePoints = 10;
-        let maxQuizPoints = 10;
-        let maxBonusPoints = 2;
-
+        const MAX_POINTS = { LECTURE_TOTAL: 0, EXERCISE_TOTAL: 0, LECTURE_TOPIC: 20, EXERCISE_TOPIC: 10, QUIZ: 10, BONUS: 2 };
         let warningCappedInput = false;
 
         // --- Theme Toggling ---
@@ -889,26 +881,26 @@
 
             // Points from previous topics (completed before the current one)
             const prevExercisePoints = {
-                topic1: parseFloat(validateInput(document.getElementById("exercise_topic1").value, maxExercisePoints)) || 0,
-                topic2: parseFloat(validateInput(document.getElementById("exercise_topic2").value, maxExercisePoints)) || 0,
-                topic3: parseFloat(validateInput(document.getElementById("exercise_topic3").value, maxExercisePoints)) || 0,
+                topic1: parseFloat(validateInput(document.getElementById("exercise_topic1").value, MAX_POINTS.EXERCISE_TOPIC)) || 0,
+                topic2: parseFloat(validateInput(document.getElementById("exercise_topic2").value, MAX_POINTS.EXERCISE_TOPIC)) || 0,
+                topic3: parseFloat(validateInput(document.getElementById("exercise_topic3").value, MAX_POINTS.EXERCISE_TOPIC)) || 0,
             };
             const prevLecturePoints = {
-                topic1: parseFloat(validateInput(document.getElementById("lecture_topic1").value, maxLecturePoints)) || 0,
-                topic2: parseFloat(validateInput(document.getElementById("lecture_topic2").value, maxLecturePoints)) || 0,
-                topic3: parseFloat(validateInput(document.getElementById("lecture_topic3").value, maxLecturePoints)) || 0,
+                topic1: parseFloat(validateInput(document.getElementById("lecture_topic1").value, MAX_POINTS.LECTURE_TOPIC)) || 0,
+                topic2: parseFloat(validateInput(document.getElementById("lecture_topic2").value, MAX_POINTS.LECTURE_TOPIC)) || 0,
+                topic3: parseFloat(validateInput(document.getElementById("lecture_topic3").value, MAX_POINTS.LECTURE_TOPIC)) || 0,
             };
 
             // Quiz and Bonus points for the current topic's modules
             const quizPoints = {
-                L1: parseFloat(validateInput(document.getElementById("quiz_L1").value, maxQuizPoints)) || 0,
-                L2: parseFloat(validateInput(document.getElementById("quiz_L2").value, maxQuizPoints)) || 0,
-                E: parseFloat(validateInput(document.getElementById("quiz_E").value, maxQuizPoints)) || 0,
+                L1: parseFloat(validateInput(document.getElementById("quiz_L1").value, MAX_POINTS.QUIZ)) || 0,
+                L2: parseFloat(validateInput(document.getElementById("quiz_L2").value, MAX_POINTS.QUIZ)) || 0,
+                E: parseFloat(validateInput(document.getElementById("quiz_E").value, MAX_POINTS.QUIZ)) || 0,
             };
             const bonusPoints = {
-                L1: parseFloat(validateInput(document.getElementById("bonus_L1").value, maxBonusPoints)) || 0,
-                L2: parseFloat(validateInput(document.getElementById("bonus_L2").value, maxBonusPoints)) || 0,
-                E: parseFloat(validateInput(document.getElementById("bonus_E").value, maxBonusPoints)) || 0,
+                L1: parseFloat(validateInput(document.getElementById("bonus_L1").value, MAX_POINTS.BONUS)) || 0,
+                L2: parseFloat(validateInput(document.getElementById("bonus_L2").value, MAX_POINTS.BONUS)) || 0,
+                E: parseFloat(validateInput(document.getElementById("bonus_E").value, MAX_POINTS.BONUS)) || 0,
             };
 
             // Recalculate max possible points based on completed and current topics
@@ -925,7 +917,10 @@
             document.getElementById("recommendation_reasoning").textContent = bestStrategyResult.reasoning; // Display reasoning for the recommendation
 
             // Display overall course grading (points and percentages)
-            const courseGradingText = formatcourseGrading(bestStrategyResult.result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints);
+            const isFailingLecture = !isPassingLecture(getLastTopicWithValues(prevExercisePoints, prevLecturePoints), prevLecturePoints)
+            console.log(prevLecturePoints, isFailingLecture)
+
+            const courseGradingText = formatcourseGrading(bestStrategyResult.result, isFailingLecture);
             document.getElementById("course_performance").innerHTML = courseGradingText; // Display course grading
 
             // Display warnings
@@ -978,23 +973,23 @@
 
         /**
          * Recalculates the maximum possible lecture and exercise points based on completed and current topics.
-         * Updates the global variables `maxLecturePointsTotal` and `maxExercisePointsTotal`.
+         * Updates the global variables `MAX_POINTS.LECTURE_TOTAL` and `MAX_POINTS.EXERCISE_TOTAL`.
          * @param {object} prevExercisePoints Points from previous exercise topics.
          * @param {object} prevLecturePoints Points from previous lecture topics.
          * @param {object} quizPoints Quiz points for the current topic modules.
          * @param {object} bonusPoints Bonus points for the current topic modules.
          */
         function recalculateMaxPoints(prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
-            maxLecturePointsTotal = maxLecturePoints;
-            maxExercisePointsTotal = maxExercisePoints;
+            MAX_POINTS.LECTURE_TOTAL = MAX_POINTS.LECTURE_TOPIC;
+            MAX_POINTS.EXERCISE_TOTAL = MAX_POINTS.EXERCISE_TOPIC;
 
             // Determine the index of the last topic with entered points in previous topics
             let lastTopicIndex = getLastTopicWithValues(prevExercisePoints, prevLecturePoints);
 
             // Calculate max points based on the number of topics considered (previous and current if applicable)
             for (let i = 1; i <= lastTopicIndex; i++) {
-                maxLecturePointsTotal += maxLecturePoints; // Each topic has a max of 20 lecture points
-                maxExercisePointsTotal += maxExercisePoints; // Each topic has a max of 10 exercise points
+                MAX_POINTS.LECTURE_TOTAL += MAX_POINTS.LECTURE_TOPIC; // Each topic has a max of 20 lecture points
+                MAX_POINTS.EXERCISE_TOTAL += MAX_POINTS.EXERCISE_TOPIC; // Each topic has a max of 10 exercise points
             }
         }
 
@@ -1041,8 +1036,8 @@
             } // "noLab" has labPoints = 0, so no allocation needed
 
             // Calculate total lecture and exercise points, capped at max per topic
-            const lecturePoints = Math.min(lectureLabPoints + mL1 + mL2, maxLecturePoints);
-            const exercisePoints = Math.min(exerciseLabPoints + mE, maxExercisePoints); 
+            const lecturePoints = Math.min(lectureLabPoints + mL1 + mL2, MAX_POINTS.LECTURE_TOPIC);
+            const exercisePoints = Math.min(exerciseLabPoints + mE, MAX_POINTS.EXERCISE_TOPIC); 
             return { lecturePoints: lecturePoints, exercisePoints: exercisePoints };
         }
 
@@ -1140,7 +1135,7 @@
                     <td>${labName}</td>
                     <td>${result.totalLecturePoints.toFixed(2)}</td>
                     <td>${result.totalExercisePoints.toFixed(2)}</td>
-                    <td>${totalLabOptionPoints.toFixed(2)} (${((totalLabOptionPoints*100)/(maxLecturePointsTotal + maxExercisePointsTotal)).toFixed(0)}%)</td>
+                    <td>${totalLabOptionPoints.toFixed(2)} (${((totalLabOptionPoints*100)/(MAX_POINTS.LECTURE_TOTAL + MAX_POINTS.EXERCISE_TOTAL)).toFixed(0)}%)</td>
                     <td>${result.gpa.toFixed(2)}</td>
                 </tr>`;
             }
@@ -1172,13 +1167,14 @@
             const currentTopicLecturePointsNoLab = currentTopicNoLabPoints.lecturePoints;
 
             // Check if current topic modules are passing (>= 50% of max points for each module type)
-            const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= maxExercisePoints / 2;
-            const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= maxLecturePoints / 2;
+            const isCurrentTopicExercisePassing = currentTopicExercisePointsNoLab >= MAX_POINTS.EXERCISE_TOPIC / 2;
+            const isCurrentTopicLecturePassing = currentTopicLecturePointsNoLab >= MAX_POINTS.LECTURE_TOPIC / 2;
 
             const numberOfPrevTopics = getLastTopicWithValues(prevExercisePoints, prevLecturePoints)
+            const isFailingLecture = !isPassingLecture(numberOfPrevTopics, prevLecturePoints)
 
             // Prioritize passing the excercise if previous lecture points below threshold regardless of the strategy
-            if (!isPassingLecture(numberOfPrevTopics, prevLecturePoints)) { 
+            if (isFailingLecture) { 
                 reasoning = "Reasoning: Prioritizing passing the exercise as a previous lecture topic did not reach at least 10 points, so the big exam has to be made.";
                 bestLabType = "exercise"; // Excercise-lab as lecture does not make sense anymore
                 bestResult = labOptionsResults["exercise"];       
@@ -1330,14 +1326,10 @@
             let labDisplayName = "";
 
             // Convert labType value to display-friendly lab name
-            if (labType === "noLab") {
-                labDisplayName = "No Lab Exercise";
-            } else if (labType === "lecture") {
-                labDisplayName = "Lecture-lab";
-            } else if (labType === "exercise") {
-                labDisplayName = "Exercise-lab";
-            } else if (labType === "combined") {
-                labDisplayName = "Combined-lab";
+            if (labType === "noLab") {labDisplayName = "No Lab Exercise";
+            } else if (labType === "lecture") {labDisplayName = "Lecture-lab";
+            } else if (labType === "exercise") {labDisplayName = "Exercise-lab";
+            } else if (labType === "combined") {labDisplayName = "Combined-lab";
             } else if (labType.includes("or")) { // Handle cases where multiple lab types are recommended (joined by " or ")
                 labDisplayName = labType.split(" or ").map(type => {
                     if (type === "noLab") return "No Lab Exercise";
@@ -1346,9 +1338,7 @@
                     if (type === "combined") return "Combined-lab";
                     return ""; // Handle unknown types (should not happen)
                 }).join(" or ");
-            } else {
-                labDisplayName = "****"; // Handle unknown types (should not happen)
-            }
+            } else {labDisplayName = "****";} // Handle unknown types (should not happen)
 
             text += `${labDisplayName}</b>.`; // Add lab display name to the recommendation text
 
@@ -1358,17 +1348,13 @@
         /**
          * Formats the estimated course grading details into an HTML table based on the best strategy result.
          * Displays lecture, exercise, and combined points, percentages, grades, and the weighted GPA.
-         * Assumes global variables `maxLecturePointsTotal` and `maxExercisePointsTotal` are correctly calculated and accessible.
+         * Assumes global variables `MAX_POINTS.LECTURE_TOTAL` and `MAX_POINTS.EXERCISE_TOTAL` are correctly calculated and accessible.
          *
          * @param {object} result - The result object corresponding to the recommended strategy.
          *                          Expected properties: totalLecturePoints, totalExercisePoints, gpa.
-         * @param {object} prevExercisePoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
-         * @param {object} prevLecturePoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
-         * @param {object} quizPoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
-         * @param {object} bonusPoints - (Unused in this refactored version, kept for signature consistency if needed elsewhere, but logic relies on `result`).
          * @returns {string} An HTML string representing the formatted course grading table and surrounding text.
          */
-         function formatcourseGrading(result, prevExercisePoints, prevLecturePoints, quizPoints, bonusPoints) {
+         function formatcourseGrading(result, isFailingLecture){
             // --- Extract Data from Result ---
             const totalLecturePoints = result.totalLecturePoints;
             const totalExercisePoints = result.totalExercisePoints;
@@ -1376,11 +1362,11 @@
 
             // --- Calculate Derived Values ---
             const totalCombinedPoints = totalLecturePoints + totalExercisePoints;
-            const maxCombinedPointsTotal = maxLecturePointsTotal + maxExercisePointsTotal;
+            const maxCombinedPointsTotal = MAX_POINTS.LECTURE_TOTAL + MAX_POINTS.EXERCISE_TOTAL;
 
             // Calculate percentages (handle division by zero if max points are 0)
-            const lecturePercentage = maxLecturePointsTotal > 0 ? (totalLecturePoints / maxLecturePointsTotal) * 100 : 0;
-            const exercisePercentage = maxExercisePointsTotal > 0 ? (totalExercisePoints / maxExercisePointsTotal) * 100 : 0;
+            const lecturePercentage = MAX_POINTS.LECTURE_TOTAL > 0 ? (totalLecturePoints / MAX_POINTS.LECTURE_TOTAL) * 100 : 0;
+            const exercisePercentage = MAX_POINTS.EXERCISE_TOTAL > 0 ? (totalExercisePoints / MAX_POINTS.EXERCISE_TOTAL) * 100 : 0;
             const combinedPercentage = maxCombinedPointsTotal > 0 ? (totalCombinedPoints / maxCombinedPointsTotal) * 100 : 0; 
 
             // Calculate individual grades
@@ -1390,16 +1376,26 @@
             // HTML table
             // Header and introductory paragraph
             let htmlOutput = `<h3>Course Grading with Recommended Strategy</h3>`;
-            htmlOutput += `<p>Points and grades are calculated based on the recommended lab option. Note that for the lecture at least 10 points in every topic must be reached, which is not considered here.</p>`;
+            htmlOutput += `<p>Points and grades are calculated based on the recommended lab option. Note that for the lecture at least 10 points in every topic must be reached to pass the WQ mode!</p>`;
+
+            // Add a warning in case a topic from the lecture failes
+            if (isFailingLecture)
+            {   
+                htmlOutput += `
+                <div class="warning">
+                    <p>Warning: At least one topic from the lecture did not reach 10 points!</p> 
+                </div>                         
+                `
+            }
 
             // Headers
             htmlOutput += `<table class="lab-options-table">
                             <thead>
                                 <tr>
-                                    <th>Category</th>
-                                    <th>Points / Max</th>
-                                    <th>% Achieved</th>
-                                    <th>GPA</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Points / Max</th>
+                                    <th scope="col">% Achieved</th>
+                                    <th scope="col">GPA</th>
                                 </tr>
                             </thead>
                             <tbody>`;
@@ -1407,7 +1403,7 @@
             // Lecture Row
             htmlOutput += `<tr>
                                <td>Lecture</td>
-                               <td>${totalLecturePoints.toFixed(2)} / ${maxLecturePointsTotal}</td>
+                               <td>${totalLecturePoints.toFixed(2)} / ${MAX_POINTS.LECTURE_TOTAL}</td>
                                <td>${lecturePercentage.toFixed(0)}%</td>
                                <td>${lectureGrade.toFixed(1)}</td>
                            </tr>`;
@@ -1415,7 +1411,7 @@
             // Exercise Row
             htmlOutput += `<tr>
                                <td>Exercise</td>
-                               <td>${totalExercisePoints.toFixed(2)} / ${maxExercisePointsTotal}</td>
+                               <td>${totalExercisePoints.toFixed(2)} / ${MAX_POINTS.EXERCISE_TOTAL}</td>
                                <td>${exercisePercentage.toFixed(0)}%</td>
                                <td>${exerciseGrade.toFixed(1)}</td>
                            </tr>`;
@@ -1525,7 +1521,7 @@
             const topicLecturePoints = [];
             let remainingPoints = totalLecturePoints;
             for (let i = 0; i < 4; i++) { // Assume 4 topics for lecture points distribution
-                const topicPoint = Math.min(remainingPoints, maxLecturePoints); // Points for current topic capped at max points per topic
+                const topicPoint = Math.min(remainingPoints, MAX_POINTS.LECTURE_TOPIC); // Points for current topic capped at max points per topic
                 topicLecturePoints.push(topicPoint); // Add topic points to the array
                 remainingPoints -= topicPoint; // Subtract distributed points from remaining points
             }
@@ -1541,16 +1537,18 @@
          * @returns {number} Weighted GPA (lower is better).
          */
         function calculateGPA(totalLecturePoints, totalExercisePoints) {
+            const ECTS_WEIGHTS = { LECTURE: 6, EXERCISE: 3};
+
             // Calculate percentage of achieved points relative to max possible points
-            let lecturePercentage = (totalLecturePoints / maxLecturePointsTotal) * 100;
-            let exercisePercentage = (totalExercisePoints / maxExercisePointsTotal) * 100;
+            let lecturePercentage = (totalLecturePoints / MAX_POINTS.LECTURE_TOTAL) * 100;
+            let exercisePercentage = (totalExercisePoints / MAX_POINTS.EXERCISE_TOTAL) * 100;
 
             // Get grade for lecture and exercise based on percentage
             let lectureGrade = getGradeFromPercentage(lecturePercentage);
             let exerciseGrade = getGradeFromPercentage(exercisePercentage);
 
             // Calculate weighted GPA: (Lecture grade * 6 ECTS + Exercise grade * 3 ECTS) / (Total ECTS = 9)
-            return (lectureGrade * 6 + exerciseGrade * 3) / (6 + 3);
+            return (lectureGrade * ECTS_WEIGHTS.LECTURE + exerciseGrade * ECTS_WEIGHTS.EXERCISE) / (ECTS_WEIGHTS.LECTURE + ECTS_WEIGHTS.EXERCISE);
         }
 
         /**
